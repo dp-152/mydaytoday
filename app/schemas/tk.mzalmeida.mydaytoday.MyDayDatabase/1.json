@@ -1,0 +1,75 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "71fbce513ecf325db267cd72c094a116",
+    "entities": [
+      {
+        "tableName": "my_day_data",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`entryID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `mood_score` INTEGER NOT NULL, `today_focus` TEXT NOT NULL, `priorities` TEXT NOT NULL, `learned_today` TEXT NOT NULL, `avoid_tomorrow` TEXT NOT NULL, `thankful_for` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "entryID",
+            "columnName": "entryID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "moodScore",
+            "columnName": "mood_score",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "todayFocus",
+            "columnName": "today_focus",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "todayPriorities",
+            "columnName": "priorities",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "learnedToday",
+            "columnName": "learned_today",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "avoidTomorrow",
+            "columnName": "avoid_tomorrow",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "thankfulFor",
+            "columnName": "thankful_for",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "entryID"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"71fbce513ecf325db267cd72c094a116\")"
+    ]
+  }
+}

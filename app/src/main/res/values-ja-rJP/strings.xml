@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">今日は</string>
+    <string name="entry_todayFocusTitle">今日の中心</string>
+    <string name="entry_todayFocusHint">今日の中心は何でしたか</string>
+    <string name="entry_todayPrioritiesTitle">今日の優先</string>
+    <string name="entry_todayPrioritiesHint">今日の優先は何でしたか</string>
+    <string name="entry_learnedTodayTitle">今日の知った事</string>
+    <string name="entry_learnedTodayHint">今日は知った事は何でしたか</string>
+    <string name="entry_avoidTomorrowTitle">翌日から避けるべき事</string>
+    <string name="entry_avoidTomorrowHint">明日から避けるべき事は何ですか</string>
+    <string name="entry_thankfulForTitle">今日の有り難く思う事</string>
+    <string name="entry_thankfulForHint">今日はどんな事を有り難く思いますか</string>
+    <string name="entry_confirmMoodScoreMessage">今日の気分が選択していません。\nそのまま登録しても宜しいですか</string>
+    <string name="entry_confirmTodayFocusMessage">今日の中心が入力していません。\nそのまま登録しても宜しいですか</string>
+    <string name="entry_confirmTodayPrioritiesMessage">今日の優先が入力していません。\nそのまま登録しても宜しいですか</string>
+    <string name="entry_confirmLearnedTodayMessage">今日の知った事が入力していません。\nそのまま登録しても宜しいですか</string>
+    <string name="entry_confirmAvoidTomorrowMessage">明日から避けるべき事が入力していません。\nそのまま登録しても宜しいですか</string>
+    <string name="entry_confirmThankfulForMessage">今日の有り難く思う事が入力していません。\nそのまま登録しても宜しいですか</string>
+    <string name="entry_confirmEmptyFieldTrue">はい</string>
+    <string name="entry_confirmEmptyFieldFalse">いいえ</string>
+    <string name="newEntry_label">%1$s ・ 新登録</string>
+    <string name="newEntry_labelToday">今日は%1$s</string>
+    <string name="newEntry_submitSuccessNew">完全に登録しました</string>
+    <string name="newEntry_submitSuccessUpdate">完全に修正されました!</string>
+    <string name="editEntry_label">%1$s - 登録修正</string>
+    <string name="emptyDay_label">%1$s - 登録無し</string>
+    <string name="emptyDay_defaultMessage">今日の登録はまだ無いようです。\n今すぐ下の「✒」ボタンを押して登録することができます。</string>
+    <string name="currentEntry_deleteConfirmationMessage">この日の登録を不変に削除します。\n削除した後、この日の登録を元に戻すことができません。\n削除しても宜しいですか</string>
+    <string name="currentEntry_deleteConfirmationTrue">削除する</string>
+    <string name="currentEntry_deleteConfirmationFalse">削除しない</string>
+    <string name="currentEntry_deleteConfirmationDone">完全に削除されました</string>
+</resources>

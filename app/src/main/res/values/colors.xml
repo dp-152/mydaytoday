@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#233491</color>
+
+    <color name="mood0_Background">#FF8680</color>
+    <color name="mood0_Pressed">#FFD0CD</color>
+    <color name="mood0_Text">#980800</color>
+
+    <color name="mood1_Background">#FFC15E</color>
+    <color name="mood1_Pressed">#FFDFAD</color>
+    <color name="mood1_Text">#965C00</color>
+
+    <color name="mood2_Background">#FFF56E</color>
+    <color name="mood2_Pressed">#FFFBBD</color>
+    <color name="mood2_Text">#9E9400</color>
+
+    <color name="mood3_Background">#CFEF56</color>
+    <color name="mood3_Pressed">#E9FBA7</color>
+    <color name="mood3_Text">#5B7400</color>
+
+    <color name="mood4_Background">#8DD979</color>
+    <color name="mood4_Pressed">#D8F5D0</color>
+    <color name="mood4_Text">#156500</color>
+
+    <color name="moodNull_Background">#ABABAB</color>
+    <color name="moodNull_Pressed">#C3C3C3</color>
+    <color name="moodNull_Text">#393939</color>
+
+    <color name="disabled_Background">#DFDFDF</color>
+    <color name="disabled_Text">#FFF</color>
+
+    <color name="delete_FAB_background_tint">#E6352D</color>
+
+</resources>
