@@ -17,7 +17,6 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-const val EXTRA_CURRENT_ENTRY_DATA = "com.example.mzalmeida.mydaytoday.CURRENT_ENTRY_DATA"
 
 class CurrentEntryActivity : AppCompatActivity() {
 
@@ -49,12 +48,13 @@ class CurrentEntryActivity : AppCompatActivity() {
     }
 
     private fun asyncGetCurrentEntryData() = launch(UI) {
+        // TODO: When update flag is set, send to Complete Entry activity
         // Hide view before query is complete
         currEntry_scrollContainer.visibility = View.INVISIBLE
 
         // Run database instance
         val db = MyDayDatabase.getInstance(this@CurrentEntryActivity)
-        mEntryID = intent.getStringExtra(EXTRA_ENTRY_ID)?.toLongOrNull()
+        mEntryID = intent.getLongExtra(EXTRA_ENTRY_ID, 0)
         mEntry = async(CommonPool) { db?.myDayDAO()?.getSelectedDay(mEntryID!!)!! }.await()
         db!!.destroyInstance()
 
@@ -149,9 +149,13 @@ class CurrentEntryActivity : AppCompatActivity() {
     fun onClickListenerCurrentEntry(view: View) {
         when (view) {
             currEntry_editCurrEntry -> {
-                val intent = Intent(this@CurrentEntryActivity, NewEntryActivity::class.java)
-                intent.apply {
-                    putExtra(EXTRA_CURRENT_ENTRY_DATA, mEntry)
+                val intent = Intent(this@CurrentEntryActivity, EntryHandlerActivity::class.java)
+                if (mEntry.concludeFlag) {
+                    intent.apply { putExtra(EXTRA_CURRENT_ENTRY_DATA, mEntry) }
+                    intent.apply { putExtra(EXTRA_ENTRY_TYPE_FLAG, IS_CONCLUDE) }
+                } else {
+                    intent.apply { putExtra(EXTRA_CURRENT_ENTRY_DATA, mEntry) }
+                    intent.apply { putExtra(EXTRA_ENTRY_TYPE_FLAG, IS_UPDATE) }
                 }
                 startActivity(intent)
             }

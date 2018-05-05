@@ -16,9 +16,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CurrentEntryActivity"/>
+        <activity android:name=".CurrentEntryActivity" />
         <activity android:name=".EmptyDayActivity" />
-        <activity android:name=".NewEntryActivity" />
+        <activity android:name=".EntryHandlerActivity" />
     </application>
 
 </manifest>

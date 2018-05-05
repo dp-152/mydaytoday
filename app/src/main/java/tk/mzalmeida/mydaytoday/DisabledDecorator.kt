@@ -8,9 +8,9 @@ import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import java.util.*
 
-class DisabledDecorator(val context: Context) : DayViewDecorator {
+class DisabledDecorator(private val context: Context) : DayViewDecorator {
     override fun shouldDecorate(day: CalendarDay): Boolean {
-        return day.isAfter(CalendarDay.from(Calendar.getInstance()))
+        return day.isAfter(CalendarDay.from(Calendar.getInstance(Locale.getDefault())))
     }
 
     override fun decorate(view: DayViewFacade) {

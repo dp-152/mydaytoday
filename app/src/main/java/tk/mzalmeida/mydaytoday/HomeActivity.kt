@@ -11,8 +11,6 @@ import com.prolificinteractive.materialcalendarview.*
 import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.android.UI
 
-const val EXTRA_ENTRY_ID: String = "com.example.mzalmeida.mydaytoday.ENTRY_ID"
-const val EXTRA_SELECTED_DATE: String = "com.example.mzalmeida.mydaytoday.SELECTED_DATE"
 
 // TODO: implement menu (options, help/about)
 class HomeActivity : AppCompatActivity() {
@@ -20,6 +18,7 @@ class HomeActivity : AppCompatActivity() {
     private var mListEntries: List<PartialMyDayData>? = null
 
     private lateinit var mCurrentCalendar: Calendar
+    private lateinit var mTomorrowCalendar: Calendar
 
     private val mFormatYearMonthDay = SimpleDateFormat("yyyyMMdd", Locale.US)
 
@@ -38,6 +37,9 @@ class HomeActivity : AppCompatActivity() {
         // Setting up the calendar
         mCurrentCalendar = Calendar.getInstance(Locale.getDefault())
 
+        mTomorrowCalendar = Calendar.getInstance(Locale.getDefault())
+        mTomorrowCalendar.add(Calendar.DAY_OF_MONTH, 1)
+
         val maxDateCalendar = Calendar.getInstance()
         maxDateCalendar.add(Calendar.YEAR, 1)
         maxDateCalendar.set(Calendar.DAY_OF_MONTH, 0)
@@ -45,7 +47,7 @@ class HomeActivity : AppCompatActivity() {
         val minDateCalendar = Calendar.getInstance()
         minDateCalendar.set(2016, 0, 1)
 
-        calendarView.state().edit()
+        home_calendarView.state().edit()
                 .setMaximumDate(maxDateCalendar)
                 .setMinimumDate(minDateCalendar)
                 .commit()
@@ -65,18 +67,16 @@ class HomeActivity : AppCompatActivity() {
 
         override fun onDateSelected(widget: MaterialCalendarView, date: CalendarDay, selected: Boolean) {
             widget.clearSelection()
-            val thisCalendar = date.calendar
-            val selectedDate: String = mFormatYearMonthDay.format(thisCalendar.time)
-            val thisDayIs = mListEntries!!.map { it.date == selectedDate }
-            val thisDayIndex = thisDayIs.indexOf(true)
-            if (thisDayIndex != -1) {
+            val thisDateAsString: String = mFormatYearMonthDay.format(date.calendar.time)
+            val thisDateInDBIndex = mListEntries!!.map { it.date == thisDateAsString }.indexOf(true)
+            if (thisDateInDBIndex != -1) {
                 val intent = Intent(this@HomeActivity, CurrentEntryActivity::class.java).apply {
-                    putExtra(EXTRA_ENTRY_ID, mListEntries!![thisDayIndex].entryID.toString())
+                    putExtra(EXTRA_ENTRY_ID, mListEntries!![thisDateInDBIndex].entryID)
                 }
                 startActivity(intent)
             } else {
                 val intent = Intent(this@HomeActivity, EmptyDayActivity::class.java).apply {
-                    putExtra(EXTRA_SELECTED_DATE, selectedDate)
+                    putExtra(EXTRA_SELECTED_DATE, thisDateAsString)
                 }
                 startActivity(intent)
             }
@@ -84,7 +84,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun asyncGetCalendarData() = launch(UI) {
-        calendarView.visibility = View.INVISIBLE
+        home_calendarView.visibility = View.INVISIBLE
 
         // TODO: On reload, retrieve only newly inserted or updated data
         val db = MyDayDatabase.getInstance(this@HomeActivity)
@@ -92,40 +92,40 @@ class HomeActivity : AppCompatActivity() {
         db!!.destroyInstance()
 
         // Clear and update day decorators
-        calendarView.removeDecorators()
+        home_calendarView.removeDecorators()
 
-        calendarView.addDecorators(
+        home_calendarView.addDecorators(
+                DisabledDecorator(this@HomeActivity),
                 MoodDecorator0(sortMoods(0).await(), this@HomeActivity),
                 MoodDecorator1(sortMoods(1).await(), this@HomeActivity),
                 MoodDecorator2(sortMoods(2).await(), this@HomeActivity),
                 MoodDecorator3(sortMoods(3).await(), this@HomeActivity),
                 MoodDecorator4(sortMoods(4).await(), this@HomeActivity),
-                MoodDecoratorNull(sortMoods(-1).await(), this@HomeActivity),
-                DisabledDecorator(this@HomeActivity)
+                MoodDecoratorNull(sortMoods(-1).await(), this@HomeActivity)
         )
 
-        calendarView.visibility = View.VISIBLE
+        home_calendarView.visibility = View.VISIBLE
 
         // Set listener for day selected
         // TODO: Create date picker
-        calendarView.setOnDateChangedListener(MyOnDateSelectedListener())
+        home_calendarView.setOnDateChangedListener(MyOnDateSelectedListener())
 
         // Hide new entry button if there is already an entry for today
-        if (mListEntries!!.map { it.date == mFormatYearMonthDay.format(Date()) }.indexOf(true) != -1)
-            floatingActionButton_newEntry.visibility = View.INVISIBLE
-        else floatingActionButton_newEntry.visibility = View.VISIBLE
+        val todayEntry = mListEntries!!.map { it.date == mFormatYearMonthDay.format(mCurrentCalendar.timeInMillis) }
+        val tomorrowEntry = mListEntries!!.map { it.date == mFormatYearMonthDay.format(mTomorrowCalendar.timeInMillis) }
+
+        // If entry for next day does not exist in DB, display new entry button
+        if (tomorrowEntry.indexOf(true) != -1)
+            home_tomorrowEntryButton.visibility = View.GONE
+        else home_tomorrowEntryButton.visibility = View.VISIBLE
+
+        // If entry for today exists and update flag is set, display complete entry button
+        if (todayEntry.indexOf(true) != -1 && mListEntries!![todayEntry.indexOf(true)].concludeFlag)
+            home_completeEntryButton.visibility = View.VISIBLE
+        else home_completeEntryButton.visibility = View.GONE
 
         // Reset DB Updated flag
         mDBUFlag = false
-    }
-
-    fun onClickListenerHome(view: View) {
-        when (view) {
-            floatingActionButton_newEntry -> {
-                val intent = Intent(this, NewEntryActivity::class.java)
-                startActivity(intent)
-            }
-        }
     }
 
     private fun sortMoods(mood: Int) = async(CommonPool){
@@ -142,5 +142,19 @@ class HomeActivity : AppCompatActivity() {
         return@async result
     }
 
-
+    fun onClickListenerHome(view: View) {
+        // TODO: Handle date forwarding here
+        val intent = Intent(this, EntryHandlerActivity::class.java)
+        when (view) {
+            home_tomorrowEntryButton -> {
+                intent.apply { putExtra(EXTRA_ENTRY_TYPE_FLAG, IS_TOMORROW) }
+                intent.apply { putExtra(EXTRA_SELECTED_DATE, mFormatYearMonthDay.format(mTomorrowCalendar.timeInMillis)) }
+            }
+            home_completeEntryButton -> {
+                intent.apply { putExtra(EXTRA_ENTRY_TYPE_FLAG, IS_CONCLUDE) }
+                intent.apply { putExtra(EXTRA_SELECTED_DATE, mFormatYearMonthDay.format(mCurrentCalendar.timeInMillis)) }
+            }
+        }
+        startActivity(intent)
+    }
 }

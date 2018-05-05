@@ -9,7 +9,7 @@
 
 
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-        android:id="@+id/calendarView"
+        android:id="@+id/home_calendarView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
@@ -23,19 +23,34 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton_newEntry"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:layout_marginEnd="32dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:onClick="onClickListenerHome"
-        app:srcCompat="@drawable/ic_add_circle_white_32px"
-        app:elevation="7dp"
-        app:fabSize="normal"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/home_completeEntryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:onClick="onClickListenerHome"
+            android:text="@string/home_concludeTodayButton" />
+
+        <Button
+            android:id="@+id/home_tomorrowEntryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:onClick="onClickListenerHome"
+            android:text="@string/home_planTomorrowButton" />
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

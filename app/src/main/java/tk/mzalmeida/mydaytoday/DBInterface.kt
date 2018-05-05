@@ -12,34 +12,38 @@ import kotlinx.android.parcel.Parcelize
 // Data type for database
 @Entity(tableName = "my_day_data") @Parcelize
 data class MyDayData(
+        // Field for goals?? Checkboxes??? List??????
         @PrimaryKey(autoGenerate = true) var entryID: Long,
         @ColumnInfo(name = "date") var date: String,
-        @ColumnInfo(name = "mood_score") var moodScore: Int, // Score between 0 and 5
-        @ColumnInfo(name = "today_focus") var todayFocus: String, // Text box
-        @ColumnInfo(name = "priorities") var todayPriorities: String, // Text formatted as list (!)
-        @ColumnInfo(name = "learned_today") var learnedToday: String, // Text box
-        @ColumnInfo(name = "avoid_tomorrow") var avoidTomorrow: String, // Text formatted as list
-        @ColumnInfo(name = "thankful_for") var thankfulFor: String // Text formatted as list
+        @ColumnInfo(name = "mood_score") var moodScore: Int,
+        @ColumnInfo(name = "today_focus") var todayFocus: String,
+        @ColumnInfo(name = "priorities") var todayPriorities: String,
+        @ColumnInfo(name = "learned_today") var learnedToday: String,
+        @ColumnInfo(name = "avoid_tomorrow") var avoidTomorrow: String,
+        @ColumnInfo(name = "thankful_for") var thankfulFor: String,
+        @ColumnInfo(name = "conclude_flag") var concludeFlag: Boolean
 ) : Parcelable {
     @Ignore
     constructor(): this(
             0,"",
-            3,"",
+            -1,"",
             "","",
-            "",""
+            "","",
+            true
     )
 }
 
 data class PartialMyDayData (
         var entryID: Long,
         var date: String,
-        @ColumnInfo(name = "mood_score") var moodScore: Int
+        @ColumnInfo(name = "mood_score") var moodScore: Int,
+        @ColumnInfo(name = "conclude_flag") var concludeFlag: Boolean
 )
 
 @Dao
 interface MyDayDAO {
 
-    @Query("SELECT entryID, date, mood_score FROM my_day_data")
+    @Query("SELECT entryID, date, mood_score, conclude_flag FROM my_day_data")
     fun getAllCalendarData() : List<PartialMyDayData>
 
     @Query("SELECT * FROM my_day_data WHERE entryID = :dayID LIMIT 1")
@@ -58,7 +62,7 @@ interface MyDayDAO {
     fun deleteCurrentEntry(entry: MyDayData)
 }
 
-@Database(entities = [MyDayData::class], version = 1)
+@Database(entities = [MyDayData::class], version = 2)
 abstract class MyDayDatabase : RoomDatabase() {
 
     abstract fun myDayDAO(): MyDayDAO

@@ -47,7 +47,8 @@ class EmptyDayActivity : AppCompatActivity() {
     fun onClickNewEntry(view: View) {
         when (view) {
             currEntry_newEntry -> {
-                val intent = Intent(this, NewEntryActivity::class.java).apply {
+                val intent = Intent(this, EntryHandlerActivity::class.java).apply {
+                    putExtra(EXTRA_ENTRY_TYPE_FLAG, IS_NEW_ENTRY)
                     putExtra(EXTRA_SELECTED_DATE, intent.getStringExtra(EXTRA_SELECTED_DATE))
                 }
                 startActivity(intent)
