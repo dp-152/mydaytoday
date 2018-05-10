@@ -20,7 +20,7 @@
     <color name="mood3_Pressed">#E9FBA7</color>
     <color name="mood3_Text">#5B7400</color>
 
-    <color name="mood4_Background">#8DD979</color>
+    <color name="mood4_Background">#8dd979</color>
     <color name="mood4_Pressed">#D8F5D0</color>
     <color name="mood4_Text">#156500</color>
 
@@ -31,6 +31,7 @@
     <color name="disabled_Background">#DFDFDF</color>
     <color name="disabled_Text">#FFF</color>
 
-    <color name="delete_FAB_background_tint">#E6352D</color>
+    <color name="delete_button_background_tint">#e6352d</color>
+    <color name="conclude_button_background_tint">#156500</color>
 
 </resources>

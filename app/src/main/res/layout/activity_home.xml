@@ -32,7 +32,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <Button
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/home_completeEntryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,9 +40,12 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:onClick="onClickListenerHome"
-            android:text="@string/home_concludeTodayButton" />
+            android:src="@drawable/ic_check_white_32dp"
+            android:contentDescription="@string/home_concludeTodayButton"
+            app:backgroundTint="@color/conclude_button_background_tint"
+            app:fabSize="normal" />
 
-        <Button
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/home_tomorrowEntryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,7 +53,9 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:onClick="onClickListenerHome"
-            android:text="@string/home_planTomorrowButton" />
+            android:src="@drawable/ic_add_white_32dp"
+            android:contentDescription="@string/home_planTomorrowButton"
+            app:fabSize="normal" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

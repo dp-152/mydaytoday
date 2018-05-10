@@ -5,8 +5,10 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.CheckBox
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_current_entry.*
 import kotlinx.coroutines.experimental.CommonPool
@@ -21,7 +23,7 @@ import java.util.*
 class CurrentEntryActivity : AppCompatActivity() {
 
     private var mEntryID: Long? = 0
-    private lateinit var mEntry: MyDayData
+    private lateinit var mEntry: MyDayEntryData
 
     private val parseDate = SimpleDateFormat("yyyyMMdd", Locale.US)
     private val formatDateMed = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())!!
@@ -48,14 +50,13 @@ class CurrentEntryActivity : AppCompatActivity() {
     }
 
     private fun asyncGetCurrentEntryData() = launch(UI) {
-        // TODO: When update flag is set, send to Complete Entry activity
         // Hide view before query is complete
         currEntry_scrollContainer.visibility = View.INVISIBLE
 
         // Run database instance
         val db = MyDayDatabase.getInstance(this@CurrentEntryActivity)
         mEntryID = intent.getLongExtra(EXTRA_ENTRY_ID, 0)
-        mEntry = async(CommonPool) { db?.myDayDAO()?.getSelectedDay(mEntryID!!)!! }.await()
+        mEntry = async(CommonPool) { db?.myDayDAO()?.getEntry(mEntryID!!)!! }.await()
         db!!.destroyInstance()
 
         // Set title on activity bar
@@ -70,7 +71,7 @@ class CurrentEntryActivity : AppCompatActivity() {
     private fun asyncDeleteCurrentEntryData() = launch(UI) {
 
         val db = MyDayDatabase.getInstance(this@CurrentEntryActivity)
-        launch(CommonPool) { db?.myDayDAO()?.deleteCurrentEntry(mEntry) }
+        launch(CommonPool) { db?.myDayDAO()?.deleteEntry(mEntry) }
         db?.destroyInstance()
 
         HomeActivity.mDBUFlag = true
@@ -84,10 +85,9 @@ class CurrentEntryActivity : AppCompatActivity() {
     }
 
     private fun fillEntry() {
-
         currEntry_moodIcon.background = getMoodIcon()
 
-        if (mEntry.todayFocus != "") {
+        if (mEntry.todayFocus.isNotEmpty() ) {
             currEntry_todayFocusBody.text = mEntry.todayFocus
             currEntry_todayFocusBody.visibility = View.VISIBLE
             currEntry_todayFocusTitle.visibility = View.VISIBLE
@@ -96,7 +96,7 @@ class CurrentEntryActivity : AppCompatActivity() {
             currEntry_todayFocusBody.visibility = View.GONE
             currEntry_todayFocusTitle.visibility = View.GONE
         }
-        if (mEntry.todayPriorities != "") {
+        if (mEntry.todayPriorities.isNotEmpty() ) {
             currEntry_todayPrioritiesBody.visibility = View.VISIBLE
             currEntry_todayPrioritiesTitle.visibility = View.VISIBLE
             currEntry_todayPrioritiesBody.text = mEntry.todayPriorities
@@ -105,7 +105,21 @@ class CurrentEntryActivity : AppCompatActivity() {
             currEntry_todayPrioritiesBody.visibility = View.GONE
             currEntry_todayPrioritiesTitle.visibility = View.GONE
         }
-        if (mEntry.learnedToday != "") {
+        if (mEntry.todayGoals.isNotEmpty()) {
+            val inflater = LayoutInflater.from(this@CurrentEntryActivity)
+            for ((index, line) in mEntry.todayGoals.withIndex()) {
+                if (currEntry_goalsBody.getChildAt(index) == null)
+                    inflater.inflate(R.layout.inflate_currentry_submodule_goals, currEntry_goalsBody)
+                val row = currEntry_goalsBody.getChildAt(index) as CheckBox
+                row.isChecked = line.goalCompleted
+                row.text = line.goalBody
+            }
+        }
+        else {
+            currEntry_goalsBody.visibility = View.GONE
+            currEntry_goalsTitle.visibility = View.GONE
+        }
+        if (mEntry.learnedToday.isNotEmpty() ) {
             currEntry_learnedTodayBody.visibility = View.VISIBLE
             currEntry_learnedTodayTitle.visibility = View.VISIBLE
             currEntry_learnedTodayBody.text = mEntry.learnedToday
@@ -114,7 +128,7 @@ class CurrentEntryActivity : AppCompatActivity() {
             currEntry_learnedTodayBody.visibility = View.GONE
             currEntry_learnedTodayTitle.visibility = View.GONE
         }
-        if (mEntry.avoidTomorrow != "") {
+        if (mEntry.avoidTomorrow.isNotEmpty() ) {
             currEntry_avoidTomorrowBody.visibility = View.VISIBLE
             currEntry_avoidTomorrowTitle.visibility = View.VISIBLE
             currEntry_avoidTomorrowBody.text = mEntry.avoidTomorrow
@@ -123,7 +137,7 @@ class CurrentEntryActivity : AppCompatActivity() {
             currEntry_avoidTomorrowBody.visibility = View.GONE
             currEntry_avoidTomorrowTitle.visibility = View.GONE
         }
-        if (mEntry.thankfulFor != "") {
+        if (mEntry.thankfulFor.isNotEmpty() ) {
             currEntry_thankfulForBody.visibility = View.VISIBLE
             currEntry_thankfulForTitle.visibility = View.VISIBLE
             currEntry_thankfulForBody.text = mEntry.thankfulFor

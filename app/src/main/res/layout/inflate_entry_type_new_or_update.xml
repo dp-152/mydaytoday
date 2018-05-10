@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
@@ -119,6 +120,48 @@
         app:layout_constraintTop_toBottomOf="@+id/newEntry_todayPrioritiesTitle" />
 
     <TextView
+        android:id="@+id/newEntry_goalsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:text="TextView"
+        android:textAllCaps="true"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/newEntry_todayPrioritiesBody" />
+
+    <LinearLayout
+        android:id="@+id/newEntry_goalsBody"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/newEntry_goalsTitle" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/newEntry_newGoalButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="onClickListenerEntryHandler"
+        app:fabSize="mini"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/newEntry_goalsBody"
+        app:srcCompat="@drawable/ic_add_white_32dp" />
+
+    <TextView
         android:id="@+id/newEntry_learnedTodayTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -130,7 +173,7 @@
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newEntry_todayPrioritiesBody" />
+        app:layout_constraintTop_toBottomOf="@+id/newEntry_newGoalButton" />
 
     <EditText
         android:id="@+id/newEntry_learnedTodayBody"

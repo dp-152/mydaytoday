@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "71fbce513ecf325db267cd72c094a116",
+    "identityHash": "d314a014f85d474b6fbb75e352cb0bdc",
     "entities": [
       {
-        "tableName": "my_day_data",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`entryID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `mood_score` INTEGER NOT NULL, `today_focus` TEXT NOT NULL, `priorities` TEXT NOT NULL, `learned_today` TEXT NOT NULL, `avoid_tomorrow` TEXT NOT NULL, `thankful_for` TEXT NOT NULL)",
+        "tableName": "my_day_core_data",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`entryID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `mood_score` INTEGER NOT NULL, `focus` TEXT NOT NULL, `priorities` TEXT NOT NULL, `learned_today` TEXT NOT NULL, `avoid_tomorrow` TEXT NOT NULL, `thankful_for` TEXT NOT NULL, `conclude_flag` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "entryID",
@@ -27,13 +27,13 @@
             "notNull": true
           },
           {
-            "fieldPath": "todayFocus",
-            "columnName": "today_focus",
+            "fieldPath": "dayFocus",
+            "columnName": "focus",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "todayPriorities",
+            "fieldPath": "dayPriorities",
             "columnName": "priorities",
             "affinity": "TEXT",
             "notNull": true
@@ -55,6 +55,12 @@
             "columnName": "thankful_for",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "concludeFlag",
+            "columnName": "conclude_flag",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -65,11 +71,70 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "my_day_goals_data",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`goalID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `dayID` INTEGER NOT NULL, `goal_body` TEXT NOT NULL, `goal_completed` INTEGER NOT NULL, FOREIGN KEY(`dayID`) REFERENCES `my_day_core_data`(`entryID`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "goalID",
+            "columnName": "goalID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dayID",
+            "columnName": "dayID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "goalBody",
+            "columnName": "goal_body",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "goalCompleted",
+            "columnName": "goal_completed",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "goalID"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_my_day_goals_data_dayID",
+            "unique": false,
+            "columnNames": [
+              "dayID"
+            ],
+            "createSql": "CREATE  INDEX `index_my_day_goals_data_dayID` ON `${TABLE_NAME}` (`dayID`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "my_day_core_data",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "dayID"
+            ],
+            "referencedColumns": [
+              "entryID"
+            ]
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"71fbce513ecf325db267cd72c094a116\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"d314a014f85d474b6fbb75e352cb0bdc\")"
     ]
   }
 }

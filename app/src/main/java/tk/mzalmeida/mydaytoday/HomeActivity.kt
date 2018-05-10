@@ -15,7 +15,8 @@ import kotlinx.coroutines.experimental.android.UI
 // TODO: implement menu (options, help/about)
 class HomeActivity : AppCompatActivity() {
 
-    private var mListEntries: List<PartialMyDayData>? = null
+    private var mListEntries: List<CalendarDayData>? = null
+    private var mConcludeToday: MyDayEntryData? = null
 
     private lateinit var mCurrentCalendar: Calendar
     private lateinit var mTomorrowCalendar: Calendar
@@ -44,6 +45,7 @@ class HomeActivity : AppCompatActivity() {
         maxDateCalendar.add(Calendar.YEAR, 1)
         maxDateCalendar.set(Calendar.DAY_OF_MONTH, 0)
 
+        // TODO: Dynamic minimum date
         val minDateCalendar = Calendar.getInstance()
         minDateCalendar.set(2016, 0, 1)
 
@@ -84,11 +86,12 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun asyncGetCalendarData() = launch(UI) {
-        home_calendarView.visibility = View.INVISIBLE
+        // TODO: Hide entire container
+        home_rootLayout.visibility = View.INVISIBLE
 
         // TODO: On reload, retrieve only newly inserted or updated data
-        val db = MyDayDatabase.getInstance(this@HomeActivity)
-        mListEntries = async(CommonPool) { db?.myDayDAO()?.getAllCalendarData()!! }.await()
+        var db = MyDayDatabase.getInstance(this@HomeActivity)
+        mListEntries = async(CommonPool) { db?.myDayDAO()?.getCalendarData()!! }.await()
         db!!.destroyInstance()
 
         // Clear and update day decorators
@@ -104,8 +107,6 @@ class HomeActivity : AppCompatActivity() {
                 MoodDecoratorNull(sortMoods(-1).await(), this@HomeActivity)
         )
 
-        home_calendarView.visibility = View.VISIBLE
-
         // Set listener for day selected
         // TODO: Create date picker
         home_calendarView.setOnDateChangedListener(MyOnDateSelectedListener())
@@ -120,12 +121,25 @@ class HomeActivity : AppCompatActivity() {
         else home_tomorrowEntryButton.visibility = View.VISIBLE
 
         // If entry for today exists and update flag is set, display complete entry button
-        if (todayEntry.indexOf(true) != -1 && mListEntries!![todayEntry.indexOf(true)].concludeFlag)
+        if (todayEntry.indexOf(true) != -1 && mListEntries!![todayEntry.indexOf(true)].concludeFlag) {
+
+            val mapToday = mListEntries!!.map { it.date == mFormatYearMonthDay.format(mCurrentCalendar.timeInMillis) }.indexOf(true)
+            if (mapToday != -1) {
+                db = MyDayDatabase.getInstance(this@HomeActivity)
+                mConcludeToday = async(CommonPool) { db?.myDayDAO()?.getEntry(mListEntries!![mapToday].entryID)!! }.await()
+                db!!.destroyInstance()
+            }
             home_completeEntryButton.visibility = View.VISIBLE
-        else home_completeEntryButton.visibility = View.GONE
+        }
+        else {
+            mConcludeToday = null
+            home_completeEntryButton.visibility = View.GONE
+        }
 
         // Reset DB Updated flag
         mDBUFlag = false
+
+        home_rootLayout.visibility = View.VISIBLE
     }
 
     private fun sortMoods(mood: Int) = async(CommonPool){
@@ -152,7 +166,7 @@ class HomeActivity : AppCompatActivity() {
             }
             home_completeEntryButton -> {
                 intent.apply { putExtra(EXTRA_ENTRY_TYPE_FLAG, IS_CONCLUDE) }
-                intent.apply { putExtra(EXTRA_SELECTED_DATE, mFormatYearMonthDay.format(mCurrentCalendar.timeInMillis)) }
+                intent.apply { putExtra(EXTRA_CURRENT_ENTRY_DATA, mConcludeToday) }
             }
         }
         startActivity(intent)
