@@ -317,7 +317,7 @@ class EntryHandlerActivity : AppCompatActivity() {
 
                     // Goals list is empty
                     entry.todayGoals.isEmpty() -> {
-                        alertDialogBuilder.setMessage("SomeString") // TODO: String for goals empty
+                        alertDialogBuilder.setMessage(R.string.entry_confirmGoalsEmptyMessage)
                         alertDialogBuilder.create().show()
                     }
 
@@ -361,7 +361,7 @@ class EntryHandlerActivity : AppCompatActivity() {
 
                     // Goals list is empty
                     entry.todayGoals.isEmpty() -> {
-                        alertDialogBuilder.setMessage("SomeString") // TODO: String for goals empty
+                        alertDialogBuilder.setMessage(R.string.entry_confirmGoalsEmptyMessage)
                         alertDialogBuilder.create().show()
                     }
 
@@ -379,7 +379,7 @@ class EntryHandlerActivity : AppCompatActivity() {
 
                     // Goals list has no fulfilled goals
                     goalUnchecked(entry.todayGoals) -> {
-                        alertDialogBuilder.setMessage("SomeString-unchecked") // TODO: String for no goal checked
+                        alertDialogBuilder.setMessage(R.string.entry_confirmGoalsUncheckedMessage)
                         alertDialogBuilder.create().show()
                     }
 

@@ -85,7 +85,7 @@ class CurrentEntryActivity : AppCompatActivity() {
     }
 
     private fun fillEntry() {
-        currEntry_moodIcon.background = getMoodIcon()
+        getMood()
 
         if (mEntry.todayFocus.isNotEmpty() ) {
             currEntry_todayFocusBody.text = mEntry.todayFocus
@@ -149,15 +149,50 @@ class CurrentEntryActivity : AppCompatActivity() {
 
     }
 
-    private fun getMoodIcon(): Drawable {
-        return when (mEntry.moodScore) {
-            0 -> getDrawable(R.drawable.ic_mood_0_fill)
-            1 -> getDrawable(R.drawable.ic_mood_1_fill)
-            2 -> getDrawable(R.drawable.ic_mood_2_fill)
-            3 -> getDrawable(R.drawable.ic_mood_3_fill)
-            4 -> getDrawable(R.drawable.ic_mood_4_fill)
-            else -> getDrawable(R.drawable.ic_mood_null)
+    private fun getMood() {
+        val background: Drawable
+        val description: String
+        when (mEntry.moodScore) {
+            0 -> {
+                background = getDrawable(R.drawable.ic_mood_0_fill)
+                description = String.format(
+                        getString(R.string.currentEntry_moodScoreImageDescription),
+                        getString(R.string.currentEntry_moodScoreDescription0))
+            }
+            1 -> {
+                background = getDrawable(R.drawable.ic_mood_1_fill)
+                description = String.format(
+                        getString(R.string.currentEntry_moodScoreImageDescription),
+                        getString(R.string.currentEntry_moodScoreDescription1))
+            }
+            2 -> {
+                background = getDrawable(R.drawable.ic_mood_2_fill)
+                description = String.format(
+                        getString(R.string.currentEntry_moodScoreImageDescription),
+                        getString(R.string.currentEntry_moodScoreDescription2))
+            }
+            3 -> {
+                background = getDrawable(R.drawable.ic_mood_3_fill)
+                description = String.format(
+                        getString(R.string.currentEntry_moodScoreImageDescription),
+                        getString(R.string.currentEntry_moodScoreDescription3))
+            }
+            4 -> {
+                background = getDrawable(R.drawable.ic_mood_4_fill)
+                description = String.format(
+                        getString(R.string.currentEntry_moodScoreImageDescription),
+                        getString(R.string.currentEntry_moodScoreDescription4))
+            }
+            else -> {
+                background = getDrawable(R.drawable.ic_mood_null)
+                description = String.format(
+                        getString(R.string.currentEntry_moodScoreImageDescription),
+                        getString(R.string.currentEntry_moodScoreDescriptionNull))
+            }
         }
+
+        currEntry_moodIcon.background = background
+        currEntry_moodIcon.contentDescription = description
     }
 
     fun onClickListenerCurrentEntry(view: View) {

@@ -176,7 +176,7 @@
                     android:id="@+id/entryHandler_goalsTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="TextView"
+                    android:text="@string/entry_goalsTitle"
                     android:textAlignment="center"
                     android:textAllCaps="true"
                     android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
@@ -198,6 +198,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:onClick="onClickListenerEntryHandler"
+                    android:contentDescription="@string/entry_goalAddButtonDescription"
                     app:fabSize="mini"
                     app:srcCompat="@drawable/ic_add_white_32dp" />
 

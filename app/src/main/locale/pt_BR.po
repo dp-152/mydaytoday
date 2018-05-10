@@ -1,0 +1,266 @@
+# Portuguese (Brazil) translations for PROJECT.
+# Copyright (C) 2018 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2018-05-10 18:50-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=((((n >= 0 && n <= 2)) && (!((n == 2))))"
+" ? 0 : 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.5.3\n"
+
+msgctxt "app_name"
+msgid "My Day Today"
+msgstr "Meu Dia Hoje"
+
+msgctxt "entry_focusTitle"
+msgid "Focus of the Day"
+msgstr "Foco do Dia"
+
+msgctxt "entry_focusHint"
+msgid "What have I focused on today?"
+msgstr "Em quê eu foquei hoje?"
+
+msgctxt "entry_prioritiesTitle"
+msgid "Priorities of the Day"
+msgstr "Prioridades do Dia"
+
+msgctxt "entry_prioritiesHint"
+msgid "What were my priorities today?"
+msgstr "Quais foram minhas prioridades de hoje?"
+
+msgctxt "entry_goalsTitle"
+msgid "Goals of the day"
+msgstr "Goals of the day"
+
+msgctxt "entry_goalsHint"
+msgid "Set a goal"
+msgstr "Set a goal"
+
+msgctxt "entry_goalDeleteButtonDescription"
+msgid "Delete this goal"
+msgstr "Delete this goal"
+
+msgctxt "entry_goalAddButtonDescription"
+msgid "Add a new goal"
+msgstr "Add a new goal"
+
+msgctxt "entry_learnedTodayTitle"
+msgid "What I learned"
+msgstr "O quê aprendi"
+
+msgctxt "entry_learnedTodayHint"
+msgid "What are the things I learned today?"
+msgstr "Quais foram as coisas que eu aprendi hoje?"
+
+msgctxt "entry_avoidTomorrowTitle"
+msgid "To avoid the next day"
+msgstr "Evitar no dia seguinte"
+
+msgctxt "entry_avoidTomorrowHint"
+msgid "What are the things I should avoid tomorrow?"
+msgstr "O que eu deveria evitar amanhã?"
+
+msgctxt "entry_thankfulForTitle"
+msgid "I am Thankful For:"
+msgstr "Sou grato por:"
+
+msgctxt "entry_thankfulForHint"
+msgid "What am I thankful for today?"
+msgstr "Pelo quê sou grato hoje?"
+
+msgctxt "entry_confirmMoodScoreEmptyMessage"
+msgid ""
+"You forgot to select your mood.\n"
+"Are you sure you want to submit?"
+msgstr ""
+"Você esqueceu de selecionar seu humor.\n"
+"Tem certeza de que quer continuar?"
+
+msgctxt "entry_confirmFocusEmptyMessage"
+msgid ""
+"You forgot to talk about your focus of the day.\n"
+"Are you sure you want to submit?"
+msgstr ""
+"Você esqueceu de falar sobre seu foco de hoje.\n"
+"Tem certeza de que quer continuar?"
+
+msgctxt "entry_confirmPrioritiesEmptyMessage"
+msgid ""
+"You forgot to write your priorities of the day.\n"
+"Are you sure you want to submit?"
+msgstr ""
+"Você esqueceu de escrever as suas prioridades do dia.\n"
+"Tem certeza de que quer continuar?"
+
+msgctxt "entry_confirmGoalsEmptyMessage"
+msgid ""
+"You didn't add any goals for this day.\n"
+"Are you sure you want to submit?"
+msgstr ""
+"You didn't add any goals for this day.\n"
+"Are you sure you want to submit?"
+
+msgctxt "entry_confirmGoalsUncheckedMessage"
+msgid ""
+"You didn't mark any goal as completed.\n"
+"Are you sure you want to submit?"
+msgstr ""
+"You didn't mark any goal as completed.\n"
+"Are you sure you want to submit?"
+
+msgctxt "entry_confirmLearnedTodayEmptyMessage"
+msgid ""
+"You forgot to write what you learned today.\n"
+"Are you sure you want to submit?"
+msgstr ""
+"Você esqueceu de escrever o que aprendeu hoje.\n"
+"Tem certeza de que quer continuar?"
+
+msgctxt "entry_confirmAvoidTomorrowEmptyMessage"
+msgid ""
+"You forgot to say the things you should avoid tomorrow.\n"
+"Are you sure you want to submit?"
+msgstr ""
+"Você esqueceu de dizer o que deveria evitar amanhã.\n"
+"Tem certeza de que quer continuar?"
+
+msgctxt "entry_confirmThankfulForEmptyMessage"
+msgid ""
+"You forgot to say what you are thankful for today.\n"
+"Are you sure you want to submit?"
+msgstr ""
+"Você esqueceu de dizer pelo quê você é grato hoje.\n"
+"Tem certeza de que quer continuar?"
+
+msgctxt "entry_confirmEmptyFieldTrue"
+msgid "Yes, I'm sure"
+msgstr "Sim, tenho certeza"
+
+msgctxt "entry_confirmEmptyFieldFalse"
+msgid "Go back!"
+msgstr "Voltar"
+
+#, c-format
+msgctxt "newEntry_label"
+msgid "%1$s - Create a new entry"
+msgstr "%1$s - Escrever sobre este dia"
+
+msgctxt "newEntry_submitSuccessToast"
+msgid "New entry recorded!"
+msgstr "Novo dia salvo!"
+
+msgctxt "updateEntry_submitSuccessToast"
+msgid "Updated successfully!"
+msgstr "Atualizado com sucesso!"
+
+#, c-format
+msgctxt "editEntry_label"
+msgid "%1$s - Edit this entry"
+msgstr "%1$s - Editar este dia"
+
+#, c-format
+msgctxt "emptyDay_label"
+msgid "%1$s - This day is empty"
+msgstr "%1$s - Este dia está vazio"
+
+msgctxt "emptyDay_noEntryMessage"
+msgid ""
+"Looks like you didn't write anything about this day yet.\n"
+"Don't worry, you still have a chance to do it.\n"
+"Just tap the button below:"
+msgstr ""
+"Parece que você não escreveu nada sobre esse dia.\n"
+"Não se preocupe, ainda dá tempo.\n"
+"Basta tocar no botão abaixo:"
+
+#, c-format
+msgctxt "currentEntry_moodScoreImageDescription"
+msgid "This day's mood - %1$s"
+msgstr "This day's mood - %1$s"
+
+msgctxt "currentEntry_moodScoreDescription0"
+msgid "Horrible"
+msgstr "Horrible"
+
+msgctxt "currentEntry_moodScoreDescription1"
+msgid "Bad"
+msgstr "Bad"
+
+msgctxt "currentEntry_moodScoreDescription2"
+msgid "Normal"
+msgstr "Normal"
+
+msgctxt "currentEntry_moodScoreDescription3"
+msgid "Good"
+msgstr "Good"
+
+msgctxt "currentEntry_moodScoreDescription4"
+msgid "Perfect"
+msgstr "Perfect"
+
+msgctxt "currentEntry_moodScoreDescriptionNull"
+msgid "No mood today"
+msgstr "No mood today"
+
+msgctxt "currentEntry_deleteConfirmationMessage"
+msgid ""
+"This will permanently delete this entry from your log.\n"
+"Be aware that it will not be possible to recover your entry after this.\n"
+"\n"
+"Are you sure you want to delete this entry?"
+msgstr ""
+"Isto irá excluir este dia permanentemente. Lembre-se que não vai ser "
+"possível recuperar este dia após isto.\n"
+"\n"
+"Tem certeza de que quer excluir este dia?"
+
+msgctxt "currentEntry_deleteConfirmationTrue"
+msgid "Delete entry"
+msgstr "Excluir dia"
+
+msgctxt "currentEntry_deleteConfirmationFalse"
+msgid "Go back"
+msgstr "Voltar"
+
+msgctxt "currentEntry_deleteConfirmationDone"
+msgid "Entry deleted successfully!"
+msgstr "Dia excluído com sucesso!"
+
+#, c-format
+msgctxt "tomorrowEntry_label"
+msgid "%1$s - Plan the next day"
+msgstr "%1$s - Plan the next day"
+
+msgctxt "tomorrowEntry_tomorrowFocusHint"
+msgid "What should I focus on tomorrow?"
+msgstr "What should I focus on tomorrow?"
+
+msgctxt "tomorrowEntry_tomorrowPrioritiesHint"
+msgid "What are my priorities tomorrow?"
+msgstr "What are my priorities tomorrow?"
+
+#, c-format
+msgctxt "concludeEntry_label"
+msgid "%1$s - Complete today's entry"
+msgstr "%1$s - Complete today's entry"
+
+msgctxt "home_planTomorrowButtonDescription"
+msgid "Plan Tomorrow"
+msgstr "Plan Tomorrow"
+
+msgctxt "home_concludeTodayButtonDescription"
+msgid "Complete today's entry"
+msgstr "Complete today's entry"
+
