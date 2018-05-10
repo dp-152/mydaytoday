@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/currEntry_scrollContainer"
@@ -8,8 +11,7 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    tools:context=".CurrentEntryActivity">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/currEntry_scrollConstraintContainer"

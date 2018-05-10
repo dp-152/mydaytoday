@@ -49,6 +49,7 @@ class HomeActivity : AppCompatActivity() {
         val minDateCalendar = Calendar.getInstance()
         minDateCalendar.set(2016, 0, 1)
 
+        home_calendarView.selectionMode = MaterialCalendarView.SELECTION_MODE_SINGLE
         home_calendarView.state().edit()
                 .setMaximumDate(maxDateCalendar)
                 .setMinimumDate(minDateCalendar)
@@ -57,7 +58,8 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
+        home_calendarView.clearSelection()
+        home_calendarView.invalidateDecorators()
         // Check if DB has been updated - Case true, refresh calendar
         if (mDBUFlag) {
             asyncGetCalendarData()
@@ -68,7 +70,6 @@ class HomeActivity : AppCompatActivity() {
     inner class MyOnDateSelectedListener : OnDateSelectedListener {
 
         override fun onDateSelected(widget: MaterialCalendarView, date: CalendarDay, selected: Boolean) {
-            widget.clearSelection()
             val thisDateAsString: String = mFormatYearMonthDay.format(date.calendar.time)
             val thisDateInDBIndex = mListEntries!!.map { it.date == thisDateAsString }.indexOf(true)
             if (thisDateInDBIndex != -1) {
@@ -86,7 +87,6 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun asyncGetCalendarData() = launch(UI) {
-        // TODO: Hide entire container
         home_rootLayout.visibility = View.INVISIBLE
 
         // TODO: On reload, retrieve only newly inserted or updated data
@@ -157,7 +157,6 @@ class HomeActivity : AppCompatActivity() {
     }
 
     fun onClickListenerHome(view: View) {
-        // TODO: Handle date forwarding here
         val intent = Intent(this, EntryHandlerActivity::class.java)
         when (view) {
             home_tomorrowEntryButton -> {

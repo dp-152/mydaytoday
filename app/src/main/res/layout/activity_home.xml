@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -41,7 +42,7 @@
             android:layout_marginStart="8dp"
             android:onClick="onClickListenerHome"
             android:src="@drawable/ic_check_white_32dp"
-            android:contentDescription="@string/home_concludeTodayButton"
+            android:contentDescription="@string/home_concludeTodayButtonDescription"
             app:backgroundTint="@color/conclude_button_background_tint"
             app:fabSize="normal" />
 
@@ -54,7 +55,7 @@
             android:layout_marginStart="8dp"
             android:onClick="onClickListenerHome"
             android:src="@drawable/ic_add_white_32dp"
-            android:contentDescription="@string/home_planTomorrowButton"
+            android:contentDescription="@string/home_planTomorrowButtonDescription"
             app:fabSize="normal" />
     </LinearLayout>
 

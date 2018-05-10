@@ -3,6 +3,7 @@ package tk.mzalmeida.mydaytoday
 import android.content.Intent
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
@@ -12,18 +13,14 @@ import android.view.ViewGroup
 import android.widget.*
 import java.util.*
 import kotlinx.android.synthetic.main.activity_entry_handler.*
-import kotlinx.android.synthetic.main.inflate_entry_type_new_or_update.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import kotlinx.android.synthetic.main.inflate_entry_type_today_conclude.*
-import kotlinx.android.synthetic.main.inflate_entry_type_tomorrow.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 
 class EntryHandlerActivity : AppCompatActivity() {
 
-    // TODO: Reformat entry fields and inflated layouts - use hide instead of inflate
     /**
      * Global variables block
      */
@@ -43,61 +40,12 @@ class EntryHandlerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_entry_handler)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         mInflater = LayoutInflater.from(this@EntryHandlerActivity)
-    }
 
-    override fun onResume() {
-        super.onResume()
-
-        // Set date formatter
-        val dateFormatter = SimpleDateFormat("yyyyMMdd", Locale.US)
-        val formatDate = DateFormat.getDateInstance(
-                DateFormat.MEDIUM,
-                Locale.getDefault()
-        )
-
+        entryHandler_layoutRoot.visibility = View.INVISIBLE
         // Check which entry type the activity is operating on
         mEntryType = intent.getIntExtra(EXTRA_ENTRY_TYPE_FLAG, 0)
-
-        when (mEntryType) {
-
-            IS_NEW_ENTRY -> {
-                mInflater.inflate(R.layout.inflate_entry_type_new_or_update, constraintLayoutRoot, true)
-                mInflater.inflate(R.layout.inflate_entry_submodule_goals, newEntry_goalsBody, true)
-                shouldHideDeleteGoalButton() // Called to hide delete goal button since there will be only one goal field available on init
-                title = String.format(getString(R.string.newEntry_label), formatDate.format(dateFormatter.parse(intent.getStringExtra(EXTRA_SELECTED_DATE))))
-                mThisDay = intent.getStringExtra(EXTRA_SELECTED_DATE)
-            }
-
-            IS_UPDATE -> {
-                mInflater.inflate(R.layout.inflate_entry_type_new_or_update, constraintLayoutRoot, true)
-                mInflater.inflate(R.layout.inflate_entry_submodule_goals, newEntry_goalsBody, true)
-                val entryDataExtra = intent.getParcelableExtra<MyDayEntryData>(EXTRA_CURRENT_ENTRY_DATA)
-                title = String.format(getString(R.string.editEntry_label), formatDate.format(dateFormatter.parse(entryDataExtra.date)))
-                mThisDay = entryDataExtra.date
-                mCurrentEntryID = entryDataExtra.entryID
-                setUIData(entryDataExtra)
-            }
-
-            IS_TOMORROW -> {
-                mInflater.inflate(R.layout.inflate_entry_type_tomorrow, constraintLayoutRoot, true)
-                mInflater.inflate(R.layout.inflate_entry_submodule_goals_no_checkbox, tomorrowEntry_goalsBody, true)
-                shouldHideDeleteGoalButton() // Called to hide delete goal button since there will be only one goal field available on init
-                title = String.format(getString(R.string.tomorrowEntry_label), formatDate.format(dateFormatter.parse(intent.getStringExtra(EXTRA_SELECTED_DATE))))
-                mThisDay = intent.getStringExtra(EXTRA_SELECTED_DATE)
-            }
-
-            IS_CONCLUDE -> {
-                mInflater.inflate(R.layout.inflate_entry_type_today_conclude, constraintLayoutRoot, true)
-                mInflater.inflate(R.layout.inflate_entry_submodule_goals, concludeEntry_goalsBody, true)
-                val entryDataExtra = intent.getParcelableExtra<MyDayEntryData>(EXTRA_CURRENT_ENTRY_DATA)
-                title = String.format(getString(R.string.concludeEntry_label), formatDate.format(dateFormatter.parse(entryDataExtra.date)))
-                mThisDay = entryDataExtra.date
-                mCurrentEntryID = entryDataExtra.entryID
-                setUIData(entryDataExtra)
-            }
-
-            else -> finish()
-        }
+        initializeUI()
+        entryHandler_layoutRoot.visibility = View.VISIBLE
     }
 
     // Override for back button
@@ -112,55 +60,119 @@ class EntryHandlerActivity : AppCompatActivity() {
     }
 
     /**
-     * Internal functions - Setters block
+     * Internal functions - Core block
      */
-    private fun setUIData(extra: MyDayEntryData) {
+    private fun initializeUI() {
+        // Set date formatter
+        val dateFormatter = SimpleDateFormat("yyyyMMdd", Locale.US)
+        val formatDate = DateFormat.getDateInstance(
+                DateFormat.MEDIUM,
+                Locale.getDefault()
+        )
+
         when (mEntryType) {
 
-            IS_UPDATE -> {
-                if (extra.moodScore != -1)
-                    findViewById<RadioButton>(newEntry_moodScoreRadioGroup.getChildAt(extra.moodScore).id).isChecked = true
+            IS_NEW_ENTRY -> {
+                mInflater.inflate(R.layout.inflate_entry_handler_submodule_goals, entryHandler_goalsBody, true)
+                shouldDisableDeleteGoalButton() // Called to hide delete goal button since there will be only one goal field available on init
+                title = String.format(getString(R.string.newEntry_label), formatDate.format(dateFormatter.parse(intent.getStringExtra(EXTRA_SELECTED_DATE))))
+                mThisDay = intent.getStringExtra(EXTRA_SELECTED_DATE)
+            }
 
-                newEntry_todayFocusBody.setText(extra.todayFocus)
-                newEntry_todayPrioritiesBody.setText(extra.todayPriorities)
-                setGoals(extra.todayGoals, newEntry_goalsBody)
-                newEntry_learnedTodayBody.setText(extra.learnedToday)
-                newEntry_avoidTomorrowBody.setText(extra.avoidTomorrow)
-                newEntry_thankfulForBody.setText(extra.thankfulFor)
+            IS_UPDATE -> {
+                mInflater.inflate(R.layout.inflate_entry_handler_submodule_goals, entryHandler_goalsBody, true)
+                val entryDataExtra = intent.getParcelableExtra<MyDayEntryData>(EXTRA_CURRENT_ENTRY_DATA)
+                title = String.format(getString(R.string.editEntry_label), formatDate.format(dateFormatter.parse(entryDataExtra.date)))
+                mThisDay = entryDataExtra.date
+                mCurrentEntryID = entryDataExtra.entryID
+                setUIData(entryDataExtra)
+            }
+
+            IS_TOMORROW -> {
+                entryHandler_moodScoreRadioGroup.visibility = View.GONE
+                entryHandler_learnedTodayContainer.visibility = View.GONE
+                entryHandler_avoidTomorrowContainer.visibility = View.GONE
+                entryHandler_thankfulForContainer.visibility = View.GONE
+
+                entryHandler_todayFocusBody.hint = getString(R.string.tomorrowEntry_tomorrowFocusHint)
+                entryHandler_todayPrioritiesBody.hint = getString(R.string.tomorrowEntry_tomorrowPrioritiesHint)
+
+                mInflater.inflate(R.layout.inflate_entry_handler_submodule_goals_no_checkbox, entryHandler_goalsBody, true)
+                shouldDisableDeleteGoalButton() // Called to hide delete goal button since there will be only one goal field available on init
+                title = String.format(getString(R.string.tomorrowEntry_label), formatDate.format(dateFormatter.parse(intent.getStringExtra(EXTRA_SELECTED_DATE))))
+                mThisDay = intent.getStringExtra(EXTRA_SELECTED_DATE)
             }
 
             IS_CONCLUDE -> {
-                concludeEntry_todayFocusBody.text = extra.todayFocus
-                concludeEntry_todayPrioritiesBody.text = extra.todayPriorities
-                setGoals(extra.todayGoals, concludeEntry_goalsBody)
-                concludeEntry_learnedTodayBody.setText(extra.learnedToday)
-                concludeEntry_avoidTomorrowBody.setText(extra.avoidTomorrow)
-                concludeEntry_thankfulForBody.setText(extra.thankfulFor)
+                entryHandler_todayFocusBody.visibility = View.GONE
+                entryHandler_todayPrioritiesBody.visibility = View.GONE
+
+                entryHandler_todayFocusBodyStatic.visibility = View.VISIBLE
+                entryHandler_todayPrioritiesBodyStatic.visibility = View.VISIBLE
+
+                mInflater.inflate(R.layout.inflate_entry_handler_submodule_goals, entryHandler_goalsBody, true)
+                val entryDataExtra = intent.getParcelableExtra<MyDayEntryData>(EXTRA_CURRENT_ENTRY_DATA)
+                title = String.format(getString(R.string.concludeEntry_label), formatDate.format(dateFormatter.parse(entryDataExtra.date)))
+                mThisDay = entryDataExtra.date
+                mCurrentEntryID = entryDataExtra.entryID
+                setUIData(entryDataExtra)
             }
+
+            else -> finish()
         }
     }
 
-    private fun setGoals(goals: List<MyDayGoalsData>, goalsRoot: LinearLayout) {
+    /**
+     * Internal functions - Setters block
+     */
+    private fun setUIData(extra: MyDayEntryData) {
+        if (extra.moodScore != -1)
+            findViewById<RadioButton>(entryHandler_moodScoreRadioGroup.getChildAt(extra.moodScore).id).isChecked = true
+
+        if (mEntryType == IS_CONCLUDE) {
+            entryHandler_todayFocusBodyStatic.text = extra.todayFocus
+            entryHandler_todayPrioritiesBodyStatic.text = extra.todayPriorities
+        }
+        else {
+            entryHandler_todayFocusBody.setText(extra.todayFocus)
+            entryHandler_todayPrioritiesBody.setText(extra.todayPriorities)
+        }
+        setGoals(extra.todayGoals)
+        entryHandler_learnedTodayBody.setText(extra.learnedToday)
+        entryHandler_avoidTomorrowBody.setText(extra.avoidTomorrow)
+        entryHandler_thankfulForBody.setText(extra.thankfulFor)
+
+    }
+
+    private fun setGoals(goals: List<MyDayGoalsData>) {
 
         for ((index, line) in goals.withIndex()) {
-            // Prevents inflating on index 0 to avoid empty field at the bottom
+            // Disables inflating on index 0 to prevent empty field at the bottom
             if (index != 0)
-                mInflater.inflate(R.layout.inflate_entry_submodule_goals, goalsRoot, true)
+                mInflater.inflate(R.layout.inflate_entry_handler_submodule_goals, entryHandler_goalsBody, true)
 
-            val goalsRow = goalsRoot.getChildAt(index) as ConstraintLayout
+            val goalsRow = entryHandler_goalsBody.getChildAt(index) as ConstraintLayout
 
             /**
              * Row items:
-             *      0 = Checkbox for goal completed;
-             *      1 = EditText for goal body;
+             *      0 = Checkbox for goal completed input;
+             *      1 = EditText for goal body input;
              *      2 = ImageButton for deleting current row;
              *      3 = Invisible TextView for storing goal ID
              */
             (goalsRow.getChildAt(0) as CheckBox).isChecked = line.goalCompleted
-            (goalsRow.getChildAt(1) as EditText).setText(line.goalBody)
+
+            // When entry type = conclude, replaces EditText with static text
+            if (mEntryType == IS_CONCLUDE) {
+                (goalsRow.getChildAt(0) as CheckBox).text = line.goalBody
+                (goalsRow.getChildAt(1) as EditText).visibility = View.GONE
+            }
+            else
+                (goalsRow.getChildAt(1) as EditText).setText(line.goalBody)
+
             (goalsRow.getChildAt(3) as TextView).text = line.goalID.toString()
         }
-        shouldHideDeleteGoalButton()
+        shouldDisableDeleteGoalButton()
     }
 
     /**
@@ -168,45 +180,33 @@ class EntryHandlerActivity : AppCompatActivity() {
      */
     private fun getUIData(): MyDayEntryData {
         val result = MyDayEntryData()
+
+        result.date = mThisDay
+        result.todayFocus = entryHandler_todayFocusBody.text.toString()
+        result.todayPriorities = entryHandler_todayPrioritiesBody.text.toString()
+        result.todayGoals = getGoals(entryHandler_goalsBody)
+        result.concludeFlag = true
+
         when (mEntryType) {
-            IS_NEW_ENTRY, IS_UPDATE -> {
+            IS_NEW_ENTRY, IS_UPDATE, IS_CONCLUDE -> {
                 result.date = mThisDay
-                result.moodScore = getMoodScore(newEntry_moodScoreRadioGroup)
-                result.todayFocus = newEntry_todayFocusBody.text.toString()
-                result.todayPriorities = newEntry_todayPrioritiesBody.text.toString()
-                result.todayGoals = getGoals(newEntry_goalsBody)
-                result.learnedToday = newEntry_learnedTodayBody.text.toString()
-                result.avoidTomorrow = newEntry_avoidTomorrowBody.text.toString()
-                result.thankfulFor = newEntry_thankfulForBody.text.toString()
-                result.concludeFlag = false
-            }
-
-            IS_TOMORROW -> {
-                result.date = mThisDay
-                result.todayFocus = tomorrowEntry_tomorrowFocusBody.text.toString()
-                result.todayPriorities = tomorrowEntry_tomorrowPrioritiesBody.text.toString()
-                result.todayGoals = getGoals(tomorrowEntry_goalsBody)
-                result.concludeFlag = true
-            }
-
-            IS_CONCLUDE -> {
-                result.entryID = mCurrentEntryID!!
-                result.date = mThisDay
-                result.moodScore = getMoodScore(concludeEntry_moodScoreRadioGroup)
-                result.todayFocus = concludeEntry_todayFocusBody.text.toString()
-                result.todayPriorities = concludeEntry_todayPrioritiesBody.text.toString()
-                result.todayGoals = getGoals(concludeEntry_goalsBody)
-                result.learnedToday = concludeEntry_learnedTodayBody.text.toString()
-                result.avoidTomorrow = concludeEntry_avoidTomorrowBody.text.toString()
-                result.thankfulFor = concludeEntry_thankfulForBody.text.toString()
+                result.moodScore = getMoodScore()
+                result.todayFocus = entryHandler_todayFocusBody.text.toString()
+                result.todayPriorities = entryHandler_todayPrioritiesBody.text.toString()
+                result.todayGoals = getGoals(entryHandler_goalsBody)
+                result.learnedToday = entryHandler_learnedTodayBody.text.toString()
+                result.avoidTomorrow = entryHandler_avoidTomorrowBody.text.toString()
+                result.thankfulFor = entryHandler_thankfulForBody.text.toString()
                 result.concludeFlag = false
             }
         }
         return result
     }
 
-    private fun getMoodScore(moodScoreBody: RadioGroup): Int {
-        return moodScoreBody.indexOfChild(findViewById<View>(moodScoreBody.checkedRadioButtonId))
+    private fun getMoodScore(): Int {
+        return entryHandler_moodScoreRadioGroup.indexOfChild(
+                findViewById<View>(entryHandler_moodScoreRadioGroup.checkedRadioButtonId
+                ))
     }
 
     // Receives a root for goals, returns a list containing data from all fields
@@ -216,21 +216,27 @@ class EntryHandlerActivity : AppCompatActivity() {
         for (i in 0..(goalsBody.childCount - 1)) {
             val row = goalsBody.getChildAt(i) as ConstraintLayout
             val add = MyDayGoalsData()
+            val typedBody = (row.getChildAt(1) as EditText).text.toString()
+            val staticBody = (row.getChildAt(0) as CheckBox).text.toString()
 
             add.goalCompleted = (row.getChildAt(0) as CheckBox).isChecked
-            add.goalBody = (row.getChildAt(1) as EditText).text.toString()
+            add.goalBody = when {
+                typedBody.isNotBlank() -> typedBody
+                staticBody.isNotBlank() -> staticBody
+                else -> EMPTY_STRING
+            }
 
             when (mEntryType) {
                 IS_UPDATE, IS_CONCLUDE -> {
                     val idString = (row.getChildAt(3) as TextView).text.toString()
-                    if (idString.isNotEmpty())
+                    if (idString.isNotBlank())
                         add.goalID = idString.toLong()
                     add.dayID = mCurrentEntryID!!
                 }
             }
 
             // Adds to list only if goal contains a body
-            if (add.goalBody.isNotEmpty())
+            if (add.goalBody.isNotBlank())
                 result.add(add)
         }
         return result
@@ -251,19 +257,23 @@ class EntryHandlerActivity : AppCompatActivity() {
         return result
     }
 
-    // Hides delete button when there is only one goal field available
-    private fun shouldHideDeleteGoalButton() {
-        val viewRoot = when (mEntryType) {
-            IS_NEW_ENTRY, IS_UPDATE -> newEntry_goalsBody
-            IS_TOMORROW -> tomorrowEntry_goalsBody
-            IS_CONCLUDE -> concludeEntry_goalsBody
-            else -> null
-        }
+    // Tints delete button with disabled color when there is only one goal field available
+    private fun shouldDisableDeleteGoalButton() {
 
-        if (viewRoot!!.childCount == 1)
-            ((viewRoot.getChildAt(0) as ConstraintLayout).getChildAt(2) as ImageButton).visibility = View.INVISIBLE
+        if (entryHandler_goalsBody.childCount == 1)
+            ((entryHandler_goalsBody.getChildAt(0) as ConstraintLayout)
+                    .getChildAt(2) as ImageButton)
+                    .backgroundTintList = ContextCompat.getColorStateList(
+                            this@EntryHandlerActivity,
+                            R.color.disabled_button_background_tint
+                    )
         else
-            ((viewRoot.getChildAt(0) as ConstraintLayout).getChildAt(2) as ImageButton).visibility = View.VISIBLE
+            ((entryHandler_goalsBody.getChildAt(0) as ConstraintLayout)
+                    .getChildAt(2) as ImageButton)
+                    .backgroundTintList = ContextCompat.getColorStateList(
+                            this@EntryHandlerActivity,
+                            R.color.delete_button_background_tint
+                    )
 
 
     }
@@ -294,13 +304,13 @@ class EntryHandlerActivity : AppCompatActivity() {
                     }
 
                     // Today's Focus is empty
-                    entry.todayFocus.isEmpty() -> {
+                    entry.todayFocus.isBlank() -> {
                         alertDialogBuilder.setMessage(R.string.entry_confirmFocusEmptyMessage)
                         alertDialogBuilder.create().show()
                     }
 
                     // Today's Priorities is empty
-                    entry.todayPriorities.isEmpty() -> {
+                    entry.todayPriorities.isBlank() -> {
                         alertDialogBuilder.setMessage(R.string.entry_confirmPrioritiesEmptyMessage)
                         alertDialogBuilder.create().show()
                     }
@@ -312,19 +322,19 @@ class EntryHandlerActivity : AppCompatActivity() {
                     }
 
                     // Learned Today is empty
-                    entry.learnedToday.isEmpty() -> {
+                    entry.learnedToday.isBlank() -> {
                         alertDialogBuilder.setMessage(R.string.entry_confirmLearnedTodayEmptyMessage)
                         alertDialogBuilder.create().show()
                     }
 
                     // Avoid Tomorrow is empty
-                    entry.avoidTomorrow.isEmpty() -> {
+                    entry.avoidTomorrow.isBlank() -> {
                         alertDialogBuilder.setMessage(R.string.entry_confirmAvoidTomorrowEmptyMessage)
                         alertDialogBuilder.create().show()
                     }
 
                     // Thankful For is empty
-                    entry.thankfulFor.isEmpty() -> {
+                    entry.thankfulFor.isBlank() -> {
                         alertDialogBuilder.setMessage(R.string.entry_confirmThankfulForEmptyMessage)
                         alertDialogBuilder.create().show()
                     }
@@ -337,13 +347,13 @@ class EntryHandlerActivity : AppCompatActivity() {
             IS_TOMORROW -> {
                 when {
                     // Tomorrow Focus is empty
-                    entry.todayFocus.isEmpty() -> {
+                    entry.todayFocus.isBlank() -> {
                         alertDialogBuilder.setMessage(R.string.entry_confirmFocusEmptyMessage)
                         alertDialogBuilder.create().show()
                     }
 
                     // Tomorrow Priorities is empty
-                    entry.todayPriorities.isEmpty() -> {
+                    entry.todayPriorities.isBlank() -> {
                         alertDialogBuilder.setMessage(R.string.entry_confirmPrioritiesEmptyMessage)
                         alertDialogBuilder.create().show()
 
@@ -374,19 +384,19 @@ class EntryHandlerActivity : AppCompatActivity() {
                     }
 
                     // Conclude Learned Today is empty
-                    entry.learnedToday.isEmpty() -> {
+                    entry.learnedToday.isBlank() -> {
                         alertDialogBuilder.setMessage(R.string.entry_confirmLearnedTodayEmptyMessage)
                         alertDialogBuilder.create().show()
                     }
 
                     // Conclude Avoid Tomorrow is empty
-                    entry.avoidTomorrow.isEmpty() -> {
+                    entry.avoidTomorrow.isBlank() -> {
                         alertDialogBuilder.setMessage(R.string.entry_confirmAvoidTomorrowEmptyMessage)
                         alertDialogBuilder.create().show()
                     }
 
                     // Conclude Thankful For is empty
-                    entry.thankfulFor.isEmpty() -> {
+                    entry.thankfulFor.isBlank() -> {
                         alertDialogBuilder.setMessage(R.string.entry_confirmThankfulForEmptyMessage)
                         alertDialogBuilder.create().show()
                     }
@@ -448,30 +458,21 @@ class EntryHandlerActivity : AppCompatActivity() {
         }
     }
 
-
     /**
      * Public functions - Button listeners block
      */
     fun onClickListenerEntryHandler(view: View) {
 
         when (view) {
-            entry_submitEntryButton -> {
+            entryHandler_submitEntryButton -> {
                 assertEntry()
             }
-
-            newEntry_newGoalButton -> {
-                mInflater.inflate(R.layout.inflate_entry_submodule_goals, newEntry_goalsBody, true)
-                shouldHideDeleteGoalButton()
-            }
-
-            concludeEntry_newGoalButton -> {
-                mInflater.inflate(R.layout.inflate_entry_submodule_goals, concludeEntry_goalsBody, true)
-                shouldHideDeleteGoalButton()
-            }
-
-            tomorrowEntry_newGoalButton -> {
-                mInflater.inflate(R.layout.inflate_entry_submodule_goals_no_checkbox, tomorrowEntry_goalsBody, true)
-                shouldHideDeleteGoalButton()
+            entryHandler_newGoalButton -> {
+                when (mEntryType) {
+                    IS_TOMORROW -> mInflater.inflate(R.layout.inflate_entry_handler_submodule_goals_no_checkbox, entryHandler_goalsBody, true)
+                    else -> mInflater.inflate(R.layout.inflate_entry_handler_submodule_goals, entryHandler_goalsBody, true)
+                }
+                shouldDisableDeleteGoalButton()
             }
         }
     }
@@ -481,10 +482,10 @@ class EntryHandlerActivity : AppCompatActivity() {
         val goalRoot = goalLine.parent as ViewGroup
         val idHolder = (goalLine as ConstraintLayout).getChildAt(3) as TextView?
         if (goalRoot.childCount > 1) {
-            if (idHolder != null && idHolder.text != "0")
+            if (idHolder!!.text.isNotBlank() && idHolder.text != "0")
                 mDeletedGoals.add(idHolder.text.toString().toLong())
             goalRoot.removeView(goalLine)
-            shouldHideDeleteGoalButton()
+            shouldDisableDeleteGoalButton()
         }
     }
 

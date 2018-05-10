@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/entryHandler_layoutRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".EntryHandlerActivity">
@@ -17,16 +19,294 @@
         app:layout_constraintVertical_bias="1.0">
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/constraintLayoutRoot"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <RadioGroup
+                android:id="@+id/entryHandler_moodScoreRadioGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="48dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <RadioButton
+                    android:id="@+id/moodScore0"
+                    android:layout_width="60sp"
+                    android:layout_height="60sp"
+                    android:background="@drawable/drawable_radio_mood_0"
+                    android:button="@null"
+                    android:checked="false" />
+
+                <RadioButton
+                    android:id="@+id/moodScore1"
+                    android:layout_width="60sp"
+                    android:layout_height="60sp"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/drawable_radio_mood_1"
+                    android:button="@null" />
+
+                <RadioButton
+                    android:id="@+id/moodScore2"
+                    android:layout_width="60sp"
+                    android:layout_height="60sp"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/drawable_radio_mood_2"
+                    android:button="@null" />
+
+                <RadioButton
+                    android:id="@+id/moodScore3"
+                    android:layout_width="60sp"
+                    android:layout_height="60sp"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/drawable_radio_mood_3"
+                    android:button="@null" />
+
+                <RadioButton
+                    android:id="@+id/moodScore4"
+                    android:layout_width="60sp"
+                    android:layout_height="60sp"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/drawable_radio_mood_4"
+                    android:button="@null" />
+
+            </RadioGroup>
+
+            <LinearLayout
+                android:id="@+id/entryHandler_todayFocusContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="48dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/entryHandler_moodScoreRadioGroup">
+
+                <TextView
+                    android:id="@+id/entryHandler_todayFocusTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/entry_focusTitle"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+                <TextView
+                    android:id="@+id/entryHandler_todayFocusBodyStatic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+                    android:visibility="gone"/>
+
+                <EditText
+                    android:id="@+id/entryHandler_todayFocusBody"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/entry_focusHint"
+                    android:inputType="textMultiLine"
+                    android:selectAllOnFocus="false"
+                    android:singleLine="false" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/entryHandler_todayPrioritiesContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/entryHandler_todayFocusContainer">
+
+                <TextView
+                    android:id="@+id/entryHandler_todayPrioritiesTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/entry_prioritiesTitle"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+                <TextView
+                    android:id="@+id/entryHandler_todayPrioritiesBodyStatic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+                    android:visibility="gone"/>
+
+                <EditText
+                    android:id="@+id/entryHandler_todayPrioritiesBody"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:ems="10"
+                    android:hint="@string/entry_prioritiesHint"
+                    android:inputType="textMultiLine" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/entryHandler_todayGoalsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/entryHandler_todayPrioritiesContainer">
+
+                <!-- TODO: String for day goals -->
+                <TextView
+                    android:id="@+id/entryHandler_goalsTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+                <LinearLayout
+                    android:id="@+id/entryHandler_goalsBody"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/entryHandler_newGoalButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="onClickListenerEntryHandler"
+                    app:fabSize="mini"
+                    app:srcCompat="@drawable/ic_add_white_32dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/entryHandler_learnedTodayContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/entryHandler_todayGoalsContainer">
+
+                <TextView
+                    android:id="@+id/entryHandler_learnedTodayTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/entry_learnedTodayTitle"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+                <EditText
+                    android:id="@+id/entryHandler_learnedTodayBody"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:ems="10"
+                    android:hint="@string/entry_learnedTodayHint"
+                    android:inputType="textMultiLine" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/entryHandler_avoidTomorrowContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/entryHandler_learnedTodayContainer">
+
+                <TextView
+                    android:id="@+id/entryHandler_avoidTomorrowTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/entry_avoidTomorrowTitle"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+                <EditText
+                    android:id="@+id/entryHandler_avoidTomorrowBody"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:ems="10"
+                    android:hint="@string/entry_avoidTomorrowHint"
+                    android:inputType="textMultiLine"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/entryHandler_thankfulForContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="100dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/entryHandler_avoidTomorrowContainer">
+
+                <TextView
+                    android:id="@+id/entryHandler_thankfulForTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/entry_thankfulForTitle"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+                <EditText
+                    android:id="@+id/entryHandler_thankfulForBody"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:ems="10"
+                    android:hint="@string/entry_thankfulForHint"
+                    android:inputType="textMultiLine" />
+
+            </LinearLayout>
 
         </android.support.constraint.ConstraintLayout>
 
     </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/entry_submitEntryButton"
+        android:id="@+id/entryHandler_submitEntryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

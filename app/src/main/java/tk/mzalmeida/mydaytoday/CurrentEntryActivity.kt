@@ -109,7 +109,7 @@ class CurrentEntryActivity : AppCompatActivity() {
             val inflater = LayoutInflater.from(this@CurrentEntryActivity)
             for ((index, line) in mEntry.todayGoals.withIndex()) {
                 if (currEntry_goalsBody.getChildAt(index) == null)
-                    inflater.inflate(R.layout.inflate_currentry_submodule_goals, currEntry_goalsBody)
+                    inflater.inflate(R.layout.inflate_current_entry_submodule_goals, currEntry_goalsBody)
                 val row = currEntry_goalsBody.getChildAt(index) as CheckBox
                 row.isChecked = line.goalCompleted
                 row.text = line.goalBody

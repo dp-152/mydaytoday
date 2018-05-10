@@ -5,7 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".EntryHandlerActivity">
 
     <CheckBox
         android:id="@+id/checkBox3"
@@ -20,6 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- TODO: String for goal hint -->
     <EditText
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -34,6 +36,7 @@
         app:layout_constraintStart_toEndOf="@+id/checkBox3"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- TODO: String for button description -->
     <ImageButton
         android:id="@+id/imageButton3"
         android:layout_width="wrap_content"

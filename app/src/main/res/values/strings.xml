@@ -19,7 +19,6 @@
     <string name="entry_confirmEmptyFieldTrue">Yes, I\'m sure</string>
     <string name="entry_confirmEmptyFieldFalse">Go back!</string>
     <string name="newEntry_label">%1$s - Create a new entry</string>
-    <string name="newEntry_labelToday">Today is %1$s</string>
     <string name="newEntry_submitSuccessToast">New entry recorded!</string>
     <string name="updateEntry_submitSuccessToast">Updated successfully!</string>
     <string name="editEntry_label">%1$s - Edit this entry</string>
@@ -33,6 +32,6 @@
     <string name="tomorrowEntry_tomorrowFocusHint">What should I focus on tomorrow?</string>
     <string name="tomorrowEntry_tomorrowPrioritiesHint">What are my priorities tomorrow?</string>
     <string name="concludeEntry_label">%1$s - Complete today\'s entry</string>
-    <string name="home_planTomorrowButton">Plan Tomorrow</string>
-    <string name="home_concludeTodayButton">Complete today\'s entry</string>
+    <string name="home_planTomorrowButtonDescription">Plan Tomorrow</string>
+    <string name="home_concludeTodayButtonDescription">Complete today\'s entry</string>
 </resources>

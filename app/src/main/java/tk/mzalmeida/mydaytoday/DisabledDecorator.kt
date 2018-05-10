@@ -16,6 +16,6 @@ class DisabledDecorator(private val context: Context) : DayViewDecorator {
     override fun decorate(view: DayViewFacade) {
         view.setDaysDisabled(true)
         view.addSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.disabled_Text)))
-        view.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.drawable_disabled_day)!!)
+        view.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.drawable_calendar_disabled_day)!!)
     }
 }

@@ -20,7 +20,6 @@
     <string name="entry_confirmEmptyFieldTrue">はい</string>
     <string name="entry_confirmEmptyFieldFalse">いいえ</string>
     <string name="newEntry_label">%1$s ・ 新登録</string>
-    <string name="newEntry_labelToday">今日は%1$s</string>
     <string name="newEntry_submitSuccessToast">完全に登録しました</string>
     <string name="updateEntry_submitSuccessToast">完全に修正されました!</string>
     <string name="editEntry_label">%1$s - 登録修正</string>

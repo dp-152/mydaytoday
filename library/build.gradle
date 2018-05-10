@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'com.github.dcendents.android-maven'
 
 android {
     compileSdkVersion 27
@@ -14,6 +16,10 @@ android {
 
     lintOptions {
         abortOnError false
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -45,7 +51,6 @@ android.libraryVariants.all { variant ->
             }
         exclude '**/BuildConfig.java'
         exclude '**/R.java'
-        exclude 'android/support/v4/view/BetterViewPager.java'
         options {
             links "http://docs.oracle.com/javase/7/docs/api/"
             linksOffline "http://d.android.com/reference", "${android.sdkDirectory}/docs/reference"
