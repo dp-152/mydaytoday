@@ -19,7 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- TODO: String for goal hint -->
     <EditText
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -35,7 +34,6 @@
         app:layout_constraintStart_toEndOf="@+id/checkBox3"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- TODO: String for button description -->
     <ImageButton
         android:id="@+id/imageButton3"
         android:layout_width="wrap_content"

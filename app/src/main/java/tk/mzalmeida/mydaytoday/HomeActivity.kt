@@ -11,7 +11,6 @@ import com.prolificinteractive.materialcalendarview.*
 import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.android.UI
 
-
 // TODO: implement menu (options, help/about)
 class HomeActivity : AppCompatActivity() {
 
@@ -21,7 +20,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var mCurrentCalendar: Calendar
     private lateinit var mTomorrowCalendar: Calendar
 
-    private val mFormatYearMonthDay = SimpleDateFormat("yyyyMMdd", Locale.US)
+    private val mFormatYearMonthDay = SimpleDateFormat(STRING_DATE_FORMAT, Locale.US)
 
     companion object {
         // Public flag for DB Updated
@@ -41,14 +40,16 @@ class HomeActivity : AppCompatActivity() {
         mTomorrowCalendar = Calendar.getInstance(Locale.getDefault())
         mTomorrowCalendar.add(Calendar.DAY_OF_MONTH, 1)
 
+        // Set min and max dates
         val maxDateCalendar = Calendar.getInstance()
-        maxDateCalendar.add(Calendar.YEAR, 1)
+        maxDateCalendar.add(Calendar.MONTH, 2)
         maxDateCalendar.set(Calendar.DAY_OF_MONTH, 0)
 
-        // TODO: Dynamic minimum date
         val minDateCalendar = Calendar.getInstance()
-        minDateCalendar.set(2016, 0, 1)
+        minDateCalendar.add(Calendar.YEAR, -1)
+        minDateCalendar.set(Calendar.DAY_OF_MONTH, 1)
 
+        // Update view with new min and max dates
         home_calendarView.selectionMode = MaterialCalendarView.SELECTION_MODE_SINGLE
         home_calendarView.state().edit()
                 .setMaximumDate(maxDateCalendar)
@@ -58,12 +59,12 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Clear previously selected day
         home_calendarView.clearSelection()
         home_calendarView.invalidateDecorators()
         // Check if DB has been updated - Case true, refresh calendar
-        if (mDBUFlag) {
+        if (mDBUFlag)
             asyncGetCalendarData()
-        }
     }
 
     // Custom listener for day selected
@@ -77,7 +78,8 @@ class HomeActivity : AppCompatActivity() {
                     putExtra(EXTRA_ENTRY_ID, mListEntries!![thisDateInDBIndex].entryID)
                 }
                 startActivity(intent)
-            } else {
+            }
+            else {
                 val intent = Intent(this@HomeActivity, EmptyDayActivity::class.java).apply {
                     putExtra(EXTRA_SELECTED_DATE, thisDateAsString)
                 }
@@ -90,9 +92,24 @@ class HomeActivity : AppCompatActivity() {
         home_rootLayout.visibility = View.INVISIBLE
 
         // TODO: On reload, retrieve only newly inserted or updated data
-        var db = MyDayDatabase.getInstance(this@HomeActivity)
+        val db = MyDayDatabase.getInstance(this@HomeActivity)
         mListEntries = async(CommonPool) { db?.myDayDAO()?.getCalendarData()!! }.await()
-        db!!.destroyInstance()
+
+        // Dynamic min date
+        if (mListEntries!!.isNotEmpty()) {
+            val dates = mutableListOf<String>()
+
+            for (line in mListEntries!!)
+                dates.add(line.date)
+
+            dates.sort()
+            val dynMinDateCalendar = Calendar.getInstance()
+            dynMinDateCalendar.time = mFormatYearMonthDay.parse(dates[0])
+            dynMinDateCalendar.add(Calendar.YEAR, -1)
+            dynMinDateCalendar.set(Calendar.DAY_OF_MONTH, 1)
+
+            home_calendarView.state().edit().setMinimumDate(dynMinDateCalendar).commit()
+        }
 
         // Clear and update day decorators
         home_calendarView.removeDecorators()
@@ -121,13 +138,11 @@ class HomeActivity : AppCompatActivity() {
         else home_tomorrowEntryButton.visibility = View.VISIBLE
 
         // If entry for today exists and update flag is set, display complete entry button
-        if (todayEntry.indexOf(true) != -1 && mListEntries!![todayEntry.indexOf(true)].concludeFlag) {
+        if (todayEntry.indexOf(true) != -1 && mListEntries!![todayEntry.indexOf(true)].mustConcludeFlag) {
 
             val mapToday = mListEntries!!.map { it.date == mFormatYearMonthDay.format(mCurrentCalendar.timeInMillis) }.indexOf(true)
             if (mapToday != -1) {
-                db = MyDayDatabase.getInstance(this@HomeActivity)
                 mConcludeToday = async(CommonPool) { db?.myDayDAO()?.getEntry(mListEntries!![mapToday].entryID)!! }.await()
-                db!!.destroyInstance()
             }
             home_completeEntryButton.visibility = View.VISIBLE
         }
@@ -135,6 +150,8 @@ class HomeActivity : AppCompatActivity() {
             mConcludeToday = null
             home_completeEntryButton.visibility = View.GONE
         }
+
+        db!!.destroyInstance()
 
         // Reset DB Updated flag
         mDBUFlag = false

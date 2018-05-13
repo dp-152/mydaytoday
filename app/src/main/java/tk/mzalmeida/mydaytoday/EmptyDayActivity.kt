@@ -1,5 +1,6 @@
 package tk.mzalmeida.mydaytoday
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -9,6 +10,7 @@ import kotlinx.android.synthetic.main.activity_empty_day.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class EmptyDayActivity : AppCompatActivity() {
 
@@ -23,7 +25,7 @@ class EmptyDayActivity : AppCompatActivity() {
                         Locale.getDefault()
                 ).format(
                         SimpleDateFormat(
-                                "yyyyMMdd",
+                                STRING_DATE_FORMAT,
                                 Locale.US
                         ).parse(
                                 intent.getStringExtra(
@@ -44,6 +46,16 @@ class EmptyDayActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_EMPTY_DAY_ENTRY_ADDED -> {
+                if (resultCode == Activity.RESULT_OK)
+                    finish()
+            }
+        }
+    }
+
     fun onClickNewEntry(view: View) {
         when (view) {
             currEntry_newEntry -> {
@@ -51,7 +63,7 @@ class EmptyDayActivity : AppCompatActivity() {
                     putExtra(EXTRA_ENTRY_TYPE_FLAG, IS_NEW_ENTRY)
                     putExtra(EXTRA_SELECTED_DATE, intent.getStringExtra(EXTRA_SELECTED_DATE))
                 }
-                startActivity(intent)
+                startActivityForResult(intent, REQUEST_EMPTY_DAY_ENTRY_ADDED)
             }
         }
     }

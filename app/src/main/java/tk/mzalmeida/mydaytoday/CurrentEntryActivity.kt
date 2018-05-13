@@ -3,6 +3,8 @@ package tk.mzalmeida.mydaytoday
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
@@ -23,10 +25,11 @@ import java.util.*
 class CurrentEntryActivity : AppCompatActivity() {
 
     private var mEntryID: Long? = 0
+    private var mCanConclude = true
     private lateinit var mEntry: MyDayEntryData
 
-    private val parseDate = SimpleDateFormat("yyyyMMdd", Locale.US)
-    private val formatDateMed = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())!!
+    private val mDateParser = SimpleDateFormat(STRING_DATE_FORMAT, Locale.US)
+    private val mDateFormatter = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +63,30 @@ class CurrentEntryActivity : AppCompatActivity() {
         db!!.destroyInstance()
 
         // Set title on activity bar
-        title = formatDateMed.format(parseDate.parse(mEntry.date))
+        val entryDate = mDateParser.parse(mEntry.date)
+
+        title = mDateFormatter.format(entryDate)
+
+        ViewCompat.setBackgroundTintList(
+                currEntry_editCurrEntry,
+                ContextCompat.getColorStateList(
+                        this@CurrentEntryActivity,
+                        R.color.colorAccent
+                )
+        )
+
+        mCanConclude = true
+        if (mEntry.mustConcludeFlag) {
+            if (!isDueConclude(entryDate)) {
+                ViewCompat.setBackgroundTintList(
+                        currEntry_editCurrEntry,
+                        ContextCompat.getColorStateList(
+                        this@CurrentEntryActivity,
+                        R.color.disabled_button_background_tint)
+                )
+                mCanConclude = false
+            }
+        }
 
         fillEntry()
 
@@ -87,8 +113,8 @@ class CurrentEntryActivity : AppCompatActivity() {
     private fun fillEntry() {
         getMood()
 
-        if (mEntry.todayFocus.isNotEmpty() ) {
-            currEntry_todayFocusBody.text = mEntry.todayFocus
+        if (mEntry.dayFocus.isNotEmpty() ) {
+            currEntry_todayFocusBody.text = mEntry.dayFocus
             currEntry_todayFocusBody.visibility = View.VISIBLE
             currEntry_todayFocusTitle.visibility = View.VISIBLE
         }
@@ -96,24 +122,26 @@ class CurrentEntryActivity : AppCompatActivity() {
             currEntry_todayFocusBody.visibility = View.GONE
             currEntry_todayFocusTitle.visibility = View.GONE
         }
-        if (mEntry.todayPriorities.isNotEmpty() ) {
+        if (mEntry.dayPriorities.isNotEmpty() ) {
             currEntry_todayPrioritiesBody.visibility = View.VISIBLE
             currEntry_todayPrioritiesTitle.visibility = View.VISIBLE
-            currEntry_todayPrioritiesBody.text = mEntry.todayPriorities
+            currEntry_todayPrioritiesBody.text = mEntry.dayPriorities
         }
         else {
             currEntry_todayPrioritiesBody.visibility = View.GONE
             currEntry_todayPrioritiesTitle.visibility = View.GONE
         }
-        if (mEntry.todayGoals.isNotEmpty()) {
+        if (mEntry.dayGoals.isNotEmpty()) {
             val inflater = LayoutInflater.from(this@CurrentEntryActivity)
-            for ((index, line) in mEntry.todayGoals.withIndex()) {
+            for ((index, line) in mEntry.dayGoals.withIndex()) {
                 if (currEntry_goalsBody.getChildAt(index) == null)
                     inflater.inflate(R.layout.inflate_current_entry_submodule_goals, currEntry_goalsBody)
                 val row = currEntry_goalsBody.getChildAt(index) as CheckBox
                 row.isChecked = line.goalCompleted
                 row.text = line.goalBody
             }
+            currEntry_goalsBody.visibility = View.VISIBLE
+            currEntry_goalsTitle.visibility = View.VISIBLE
         }
         else {
             currEntry_goalsBody.visibility = View.GONE
@@ -195,18 +223,34 @@ class CurrentEntryActivity : AppCompatActivity() {
         currEntry_moodIcon.contentDescription = description
     }
 
+    private fun isDueConclude(date: Date): Boolean {
+        val source = Calendar.getInstance()
+        source.time = date
+        val today = Calendar.getInstance()
+
+        today.set(Calendar.HOUR_OF_DAY, 0)
+        today.set(Calendar.MINUTE, 0)
+        today.set(Calendar.SECOND, 0)
+        today.set(Calendar.MILLISECOND, 0)
+        return today.get(Calendar.ERA) >= source.get(Calendar.ERA) &&
+                today.get(Calendar.YEAR) >= source.get(Calendar.YEAR)&&
+                today.get(Calendar.DAY_OF_YEAR) >= source.get(Calendar.DAY_OF_YEAR)
+    }
+
     fun onClickListenerCurrentEntry(view: View) {
         when (view) {
             currEntry_editCurrEntry -> {
-                val intent = Intent(this@CurrentEntryActivity, EntryHandlerActivity::class.java)
-                if (mEntry.concludeFlag) {
+                if (mCanConclude) {
+                    val intent = Intent(this@CurrentEntryActivity, EntryHandlerActivity::class.java)
                     intent.apply { putExtra(EXTRA_CURRENT_ENTRY_DATA, mEntry) }
-                    intent.apply { putExtra(EXTRA_ENTRY_TYPE_FLAG, IS_CONCLUDE) }
-                } else {
-                    intent.apply { putExtra(EXTRA_CURRENT_ENTRY_DATA, mEntry) }
-                    intent.apply { putExtra(EXTRA_ENTRY_TYPE_FLAG, IS_UPDATE) }
+
+                    if (mEntry.mustConcludeFlag)
+                        intent.apply { putExtra(EXTRA_ENTRY_TYPE_FLAG, IS_CONCLUDE) }
+                    else
+                        intent.apply { putExtra(EXTRA_ENTRY_TYPE_FLAG, IS_UPDATE) }
+
+                    startActivity(intent)
                 }
-                startActivity(intent)
             }
             currEntry_deleteCurrEntry -> {
                 val alertDialogBuilder = AlertDialog.Builder(this)

@@ -10,7 +10,6 @@ import android.content.Context
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
-
 /**
  * Data types block
  */
@@ -25,7 +24,7 @@ data class MyDayCoreData(
         @ColumnInfo(name = "learned_today")     var learnedToday: String,
         @ColumnInfo(name = "avoid_tomorrow")    var avoidTomorrow: String,
         @ColumnInfo(name = "thankful_for")      var thankfulFor: String,
-        @ColumnInfo(name = "conclude_flag")     var concludeFlag: Boolean
+        @ColumnInfo(name = "conclude_flag")     var mustConcludeFlag: Boolean
 ){
     // Constructor to simplify object instantiation
     @Ignore
@@ -66,22 +65,23 @@ data class CalendarDayData (
         var entryID: Long,
         var date: String,
         @ColumnInfo(name = "mood_score") var moodScore: Int,
-        @ColumnInfo(name = "conclude_flag") var concludeFlag: Boolean
+        @ColumnInfo(name = "conclude_flag") var mustConcludeFlag: Boolean
 )
 
 // Data type for full entry, with support for parcelable
+// TODO: Make cast-able
 @Parcelize
 data class MyDayEntryData(
         var entryID: Long,
         var date: String,
         var moodScore: Int,
-        var todayFocus: String,
-        var todayPriorities: String,
-        var todayGoals: List<MyDayGoalsData>,
+        var dayFocus: String,
+        var dayPriorities: String,
+        var dayGoals: List<MyDayGoalsData>,
         var learnedToday: String,
         var avoidTomorrow: String,
         var thankfulFor: String,
-        var concludeFlag: Boolean
+        var mustConcludeFlag: Boolean
 ): Parcelable {
 
     // Constructor to simplify object instantiation
@@ -93,7 +93,6 @@ data class MyDayEntryData(
             "",true
     )
 }
-
 
 /**
  * DAO block
@@ -107,28 +106,19 @@ abstract class MyDayDAO {
      */
     @Transaction
     open fun getEntry(entryID: Long): MyDayEntryData {
-        val result = MyDayEntryData()
         val coreQuery = getCoreData(entryID)
         val goalsQuery = getGoalsData(entryID)
 
-        result.entryID = coreQuery.entryID
-        result.date = coreQuery.date
-        result.moodScore = coreQuery.moodScore
-        result.todayFocus = coreQuery.dayFocus
-        result.todayPriorities = coreQuery.dayPriorities
-        result.todayGoals = goalsQuery
-        result.learnedToday = coreQuery.learnedToday
-        result.avoidTomorrow = coreQuery.avoidTomorrow
-        result.thankfulFor = coreQuery.thankfulFor
-        result.concludeFlag = coreQuery.concludeFlag
+        val result = parseMyDayDataType(coreQuery)
 
+        result.dayGoals = goalsQuery
         return result
     }
 
     @Transaction
     open fun addEntry(entry: MyDayEntryData) {
-        val entryCoreData = parseCoreData(entry)
-        val entryGoalsData = entry.todayGoals
+        val entryCoreData = parseMyDayDataType(entry)
+        val entryGoalsData = entry.dayGoals
 
         val newEntryID = insertCoreData(entryCoreData)
         for (line in entryGoalsData)
@@ -150,14 +140,14 @@ abstract class MyDayDAO {
         val goalsToUpdate = mutableListOf<MyDayGoalsData>()
         val goalsToInsert = mutableListOf<MyDayGoalsData>()
 
-        for (line in entry.todayGoals) {
+        for (line in entry.dayGoals) {
             when (line.goalID) {
                 0.toLong() -> goalsToInsert.add(line)
                 else -> goalsToUpdate.add(line)
             }
         }
 
-        updateCoreData(parseCoreData(entry))
+        updateCoreData(parseMyDayDataType(entry))
 
         updateGoalsData(goalsToUpdate)
         insertGoalsData(goalsToInsert)
@@ -166,26 +156,43 @@ abstract class MyDayDAO {
     }
 
     // Auxiliary function to parse full entry into core data only
-    private fun parseCoreData(entry: MyDayEntryData): MyDayCoreData {
+    private fun parseMyDayDataType(entry: MyDayEntryData): MyDayCoreData {
+        
         val result = MyDayCoreData()
 
         result.entryID = entry.entryID
         result.date = entry.date
         result.moodScore = entry.moodScore
-        result.dayFocus = entry.todayFocus
-        result.dayPriorities = entry.todayPriorities
+        result.dayFocus = entry.dayFocus
+        result.dayPriorities = entry.dayPriorities
         result.learnedToday = entry.learnedToday
         result.avoidTomorrow = entry.avoidTomorrow
         result.thankfulFor = entry.thankfulFor
-        result.concludeFlag = entry.concludeFlag
+        result.mustConcludeFlag = entry.mustConcludeFlag
+
+        return result
+
+    }
+
+    private fun parseMyDayDataType(entry: MyDayCoreData): MyDayEntryData {
+        val result = MyDayEntryData()
+
+        result.entryID = entry.entryID
+        result.date = entry.date
+        result.moodScore = entry.moodScore
+        result.dayFocus = entry.dayFocus
+        result.dayPriorities = entry.dayPriorities
+        result.learnedToday = entry.learnedToday
+        result.avoidTomorrow = entry.avoidTomorrow
+        result.thankfulFor = entry.thankfulFor
+        result.mustConcludeFlag = entry.mustConcludeFlag
 
         return result
     }
 
-    // Calendar query // TODO: Optimize query to return only new or updated values
+    // Calendar query
     @Query("SELECT entryID, date, mood_score, conclude_flag FROM my_day_core_data")
     abstract fun getCalendarData(): List<CalendarDayData>
-
 
     /**
      * Core data queries block
@@ -223,7 +230,6 @@ abstract class MyDayDAO {
     @Query("DELETE FROM my_day_goals_data WHERE goalID = :goalID")
     protected abstract fun deleteGoalByID(goalID: Long)
 }
-
 
 /**
  * Database block

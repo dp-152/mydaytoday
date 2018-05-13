@@ -3,14 +3,13 @@
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-05-10 18:50-0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2018-05-10 19:23-0300\n"
+"PO-Revision-Date: 2018-05-10 18:58-0300\n"
+"Last-Translator: Mizael Pinto Almeida <mzalmeida.a@gmail.com>\n"
 "Language: pt_BR\n"
 "Language-Team: pt_BR <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=((((n >= 0 && n <= 2)) && (!((n == 2))))"
@@ -42,19 +41,19 @@ msgstr "Quais foram minhas prioridades de hoje?"
 
 msgctxt "entry_goalsTitle"
 msgid "Goals of the day"
-msgstr "Goals of the day"
+msgstr "Metas do dia"
 
 msgctxt "entry_goalsHint"
 msgid "Set a goal"
-msgstr "Set a goal"
+msgstr "Criar uma meta"
 
 msgctxt "entry_goalDeleteButtonDescription"
 msgid "Delete this goal"
-msgstr "Delete this goal"
+msgstr "Excluir esta meta"
 
 msgctxt "entry_goalAddButtonDescription"
 msgid "Add a new goal"
-msgstr "Add a new goal"
+msgstr "Adicionar nova meta"
 
 msgctxt "entry_learnedTodayTitle"
 msgid "What I learned"
@@ -109,16 +108,16 @@ msgid ""
 "You didn't add any goals for this day.\n"
 "Are you sure you want to submit?"
 msgstr ""
-"You didn't add any goals for this day.\n"
-"Are you sure you want to submit?"
+"Você não adicionou nenhuma meta para este dia.\n"
+"Tem certeza de que quer continuar?"
 
 msgctxt "entry_confirmGoalsUncheckedMessage"
 msgid ""
 "You didn't mark any goal as completed.\n"
 "Are you sure you want to submit?"
 msgstr ""
-"You didn't mark any goal as completed.\n"
-"Are you sure you want to submit?"
+"Você não marcou nenhuma meta como cumprida.\n"
+"Tem certeza de que quer continuar?"
 
 msgctxt "entry_confirmLearnedTodayEmptyMessage"
 msgid ""
@@ -188,15 +187,15 @@ msgstr ""
 #, c-format
 msgctxt "currentEntry_moodScoreImageDescription"
 msgid "This day's mood - %1$s"
-msgstr "This day's mood - %1$s"
+msgstr "Humor deste dia - %1$s"
 
 msgctxt "currentEntry_moodScoreDescription0"
 msgid "Horrible"
-msgstr "Horrible"
+msgstr "Horrível"
 
 msgctxt "currentEntry_moodScoreDescription1"
 msgid "Bad"
-msgstr "Bad"
+msgstr "Ruim"
 
 msgctxt "currentEntry_moodScoreDescription2"
 msgid "Normal"
@@ -204,15 +203,15 @@ msgstr "Normal"
 
 msgctxt "currentEntry_moodScoreDescription3"
 msgid "Good"
-msgstr "Good"
+msgstr "Bom"
 
 msgctxt "currentEntry_moodScoreDescription4"
 msgid "Perfect"
-msgstr "Perfect"
+msgstr "Perfeito"
 
 msgctxt "currentEntry_moodScoreDescriptionNull"
 msgid "No mood today"
-msgstr "No mood today"
+msgstr "Sem humor hoje"
 
 msgctxt "currentEntry_deleteConfirmationMessage"
 msgid ""
@@ -241,26 +240,26 @@ msgstr "Dia excluído com sucesso!"
 #, c-format
 msgctxt "tomorrowEntry_label"
 msgid "%1$s - Plan the next day"
-msgstr "%1$s - Plan the next day"
+msgstr "%1$s - Planejar o dia seguinte"
 
 msgctxt "tomorrowEntry_tomorrowFocusHint"
 msgid "What should I focus on tomorrow?"
-msgstr "What should I focus on tomorrow?"
+msgstr "Em quê eu devo focar amanhã?"
 
 msgctxt "tomorrowEntry_tomorrowPrioritiesHint"
 msgid "What are my priorities tomorrow?"
-msgstr "What are my priorities tomorrow?"
+msgstr "Quais são as minhas prioridades de amanhã?"
 
 #, c-format
 msgctxt "concludeEntry_label"
 msgid "%1$s - Complete today's entry"
-msgstr "%1$s - Complete today's entry"
+msgstr "%1$s - Concluir o dia de hoje"
 
 msgctxt "home_planTomorrowButtonDescription"
 msgid "Plan Tomorrow"
-msgstr "Plan Tomorrow"
+msgstr "Planejar amanhã"
 
 msgctxt "home_concludeTodayButtonDescription"
 msgid "Complete today's entry"
-msgstr "Complete today's entry"
+msgstr "Concluir o dia de hoje"
 
