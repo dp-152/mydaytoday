@@ -56,11 +56,13 @@ class CurrentEntryActivity : AppCompatActivity() {
         // Hide view before query is complete
         currEntry_scrollContainer.visibility = View.INVISIBLE
 
-        // Run database instance
-        val db = MyDayDatabase.getInstance(this@CurrentEntryActivity)
         mEntryID = intent.getLongExtra(EXTRA_ENTRY_ID, 0)
-        mEntry = async(CommonPool) { db?.myDayDAO()?.getEntry(mEntryID!!)!! }.await()
-        db!!.destroyInstance()
+        mEntry = async(CommonPool) {
+            val db = MyDayDatabase.getInstance(this@CurrentEntryActivity)
+            val result = db?.myDayDAO()?.getEntry(mEntryID!!)!!
+            db.destroyInstance()
+            return@async result
+        }.await()
 
         // Set title on activity bar
         val entryDate = mDateParser.parse(mEntry.date)
@@ -95,11 +97,11 @@ class CurrentEntryActivity : AppCompatActivity() {
     }
 
     private fun asyncDeleteCurrentEntryData() = launch(UI) {
-
-        val db = MyDayDatabase.getInstance(this@CurrentEntryActivity)
-        launch(CommonPool) { db?.myDayDAO()?.deleteEntry(mEntry) }
-        db?.destroyInstance()
-
+        launch(CommonPool) {
+            val db = MyDayDatabase.getInstance(this@CurrentEntryActivity)
+            db?.myDayDAO()?.deleteEntry(mEntry)
+            db?.destroyInstance()
+        }
         HomeActivity.mDBUFlag = true
         Toast.makeText(
                 this@CurrentEntryActivity,

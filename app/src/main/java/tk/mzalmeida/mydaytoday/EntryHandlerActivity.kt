@@ -453,22 +453,25 @@ class EntryHandlerActivity : AppCompatActivity() {
     // Submit entry to database in background thread
     private fun submitEntry(entry: MyDayEntryData) = launch(UI) {
 
-        // Initialize DB
-        val db = MyDayDatabase.getInstance(this@EntryHandlerActivity)
-
         // Evaluate entry type and launch add or update
         when (mEntryType) {
             IS_NEW_ENTRY, IS_TOMORROW -> {
-                launch(CommonPool) { db?.myDayDAO()?.addEntry(entry) }
+                launch(CommonPool) {
+                    val db = MyDayDatabase.getInstance(this@EntryHandlerActivity)
+                    db?.myDayDAO()?.addEntry(entry)
+                    db?.destroyInstance()
+                }
             }
 
             IS_UPDATE, IS_CONCLUDE -> {
                 entry.entryID = mCurrentEntryID!!
-                launch(CommonPool) { db?.myDayDAO()?.updateEntry(entry, mDeletedGoals) } // Receives auxiliary list for deleted goals
+                launch(CommonPool) {
+                    val db = MyDayDatabase.getInstance(this@EntryHandlerActivity)
+                    db?.myDayDAO()?.updateEntry(entry, mDeletedGoals)
+                    db?.destroyInstance()
+                } // Receives auxiliary list for deleted goals
             }
         }
-        // Destroy database instance to prevent leaks
-        db?.destroyInstance()
         HomeActivity.mDBUFlag = true
 
         // Send toast and move to different activity

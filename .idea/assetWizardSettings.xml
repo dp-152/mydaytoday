@@ -46,7 +46,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="76" />
+                                                <entry key="scalingPercent" value="60" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -58,7 +58,7 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="607d8b" />
-                                      <entry key="foregroundImage" value="C:\Users\mzalm\Documents\Workbench\app-icon\material_template_ic_product_icon_192px_dark_dark.svg" />
+                                      <entry key="foregroundImage" value="C:\Users\mzalm\Documents\Workbench\app-icon\ic_launcher.png" />
                                     </map>
                                   </option>
                                 </PersistentState>

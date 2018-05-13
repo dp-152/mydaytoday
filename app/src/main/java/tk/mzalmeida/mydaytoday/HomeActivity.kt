@@ -92,8 +92,13 @@ class HomeActivity : AppCompatActivity() {
         home_rootLayout.visibility = View.INVISIBLE
 
         // TODO: On reload, retrieve only newly inserted or updated data
-        val db = MyDayDatabase.getInstance(this@HomeActivity)
-        mListEntries = async(CommonPool) { db?.myDayDAO()?.getCalendarData()!! }.await()
+
+        mListEntries = async(CommonPool) {
+            val db = MyDayDatabase.getInstance(this@HomeActivity)
+            val result = db?.myDayDAO()?.getCalendarData()!!
+            db.destroyInstance()
+            return@async result
+        }.await()
 
         // Dynamic min date
         if (mListEntries!!.isNotEmpty()) {
@@ -142,7 +147,12 @@ class HomeActivity : AppCompatActivity() {
 
             val mapToday = mListEntries!!.map { it.date == mFormatYearMonthDay.format(mCurrentCalendar.timeInMillis) }.indexOf(true)
             if (mapToday != -1) {
-                mConcludeToday = async(CommonPool) { db?.myDayDAO()?.getEntry(mListEntries!![mapToday].entryID)!! }.await()
+                mConcludeToday = async(CommonPool) {
+                    val db = MyDayDatabase.getInstance(this@HomeActivity)
+                    val result = db?.myDayDAO()?.getEntry(mListEntries!![mapToday].entryID)!!
+                    db.destroyInstance()
+                    return@async result
+                }.await()
             }
             home_completeEntryButton.visibility = View.VISIBLE
         }
@@ -150,8 +160,6 @@ class HomeActivity : AppCompatActivity() {
             mConcludeToday = null
             home_completeEntryButton.visibility = View.GONE
         }
-
-        db!!.destroyInstance()
 
         // Reset DB Updated flag
         mDBUFlag = false
