@@ -21,7 +21,6 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class CurrentEntryActivity : AppCompatActivity() {
 
     private var mEntryID: Long? = 0
@@ -76,15 +75,40 @@ class CurrentEntryActivity : AppCompatActivity() {
                         R.color.colorAccent
                 )
         )
+        currEntry_editCurrEntry.setImageDrawable(
+                ContextCompat.getDrawable(
+                        this@CurrentEntryActivity,
+                        R.drawable.ic_edit_white_32px)
+        )
 
         mCanConclude = true
         if (mEntry.mustConcludeFlag) {
-            if (!isDueConclude(entryDate)) {
+            if (isDueConclude(entryDate)) {
                 ViewCompat.setBackgroundTintList(
                         currEntry_editCurrEntry,
                         ContextCompat.getColorStateList(
-                        this@CurrentEntryActivity,
-                        R.color.disabled_button_background_tint)
+                                this@CurrentEntryActivity,
+                                R.color.conclude_button_background_tint)
+                )
+                currEntry_editCurrEntry.setImageDrawable(
+                        ContextCompat.getDrawable(
+                                this@CurrentEntryActivity,
+                                R.drawable.ic_check_white_32dp)
+                )
+                mCanConclude = true
+            }
+            else {
+                ViewCompat.setBackgroundTintList(
+                        currEntry_editCurrEntry,
+                        ContextCompat.getColorStateList(
+                                this@CurrentEntryActivity,
+                                R.color.colorAccent
+                        )
+                )
+                currEntry_editCurrEntry.setImageDrawable(
+                        ContextCompat.getDrawable(
+                                this@CurrentEntryActivity,
+                                R.drawable.ic_edit_white_32px)
                 )
                 mCanConclude = false
             }
@@ -242,15 +266,24 @@ class CurrentEntryActivity : AppCompatActivity() {
     fun onClickListenerCurrentEntry(view: View) {
         when (view) {
             currEntry_editCurrEntry -> {
-                if (mCanConclude) {
+                if (mEntry.mustConcludeFlag) {
+                    if (mCanConclude) {
+                        val intent = Intent(this@CurrentEntryActivity, EntryHandlerActivity::class.java)
+                        intent.apply { putExtra(EXTRA_CURRENT_ENTRY_DATA, mEntry) }
+                        intent.apply { putExtra(EXTRA_ENTRY_TYPE_FLAG, IS_CONCLUDE) }
+                        startActivity(intent)
+                    }
+                    else {
+                        val intent = Intent(this@CurrentEntryActivity, EntryHandlerActivity::class.java)
+                        intent.apply { putExtra(EXTRA_CURRENT_ENTRY_DATA, mEntry) }
+                        intent.apply { putExtra(EXTRA_ENTRY_TYPE_FLAG, IS_EDIT_TOMORROW) }
+                        startActivity(intent)
+                    }
+                }
+                else {
                     val intent = Intent(this@CurrentEntryActivity, EntryHandlerActivity::class.java)
                     intent.apply { putExtra(EXTRA_CURRENT_ENTRY_DATA, mEntry) }
-
-                    if (mEntry.mustConcludeFlag)
-                        intent.apply { putExtra(EXTRA_ENTRY_TYPE_FLAG, IS_CONCLUDE) }
-                    else
-                        intent.apply { putExtra(EXTRA_ENTRY_TYPE_FLAG, IS_UPDATE) }
-
+                    intent.apply { putExtra(EXTRA_ENTRY_TYPE_FLAG, IS_EDIT_ENTRY) }
                     startActivity(intent)
                 }
             }

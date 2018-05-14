@@ -92,7 +92,7 @@ class EntryHandlerActivity : AppCompatActivity() {
                 mThisDay = intent.getStringExtra(EXTRA_SELECTED_DATE)
             }
 
-            IS_UPDATE -> {
+            IS_EDIT_ENTRY -> {
                 inflateGoalRow()
                 val entryDataExtra = intent.getParcelableExtra<MyDayEntryData>(EXTRA_CURRENT_ENTRY_DATA)
                 title = String.format(getString(R.string.editEntry_label), formatDate.format(dateFormatter.parse(entryDataExtra.date)))
@@ -114,6 +114,25 @@ class EntryHandlerActivity : AppCompatActivity() {
                 disableDeleteGoalButton() // Called to disable delete goal button since there will be only one goal field available on init
                 title = String.format(getString(R.string.tomorrowEntry_label), formatDate.format(dateFormatter.parse(intent.getStringExtra(EXTRA_SELECTED_DATE))))
                 mThisDay = intent.getStringExtra(EXTRA_SELECTED_DATE)
+            }
+
+            IS_EDIT_TOMORROW -> {
+                entryHandler_moodScoreRadioGroup.visibility = View.GONE
+                entryHandler_learnedTodayContainer.visibility = View.GONE
+                entryHandler_avoidTomorrowContainer.visibility = View.GONE
+                entryHandler_thankfulForContainer.visibility = View.GONE
+
+                entryHandler_todayFocusBody.hint = getString(R.string.tomorrowEntry_tomorrowFocusHint)
+                entryHandler_todayPrioritiesBody.hint = getString(R.string.tomorrowEntry_tomorrowPrioritiesHint)
+
+                inflateGoalRow()
+                val entryDataExtra = intent.getParcelableExtra<MyDayEntryData>(EXTRA_CURRENT_ENTRY_DATA)
+                disableDeleteGoalButton() // Called to disable delete goal button since there will be only one goal field available on init
+                title = String.format(getString(R.string.editEntry_label), formatDate.format(dateFormatter.parse(entryDataExtra.date)))
+                mThisDay = entryDataExtra.date
+                mCurrentEntryID = entryDataExtra.entryID
+                setUIData(entryDataExtra)
+
             }
 
             IS_CONCLUDE -> {
@@ -192,7 +211,7 @@ class EntryHandlerActivity : AppCompatActivity() {
         result.mustConcludeFlag = true
 
         when (mEntryType) {
-            IS_NEW_ENTRY, IS_UPDATE, IS_CONCLUDE -> {
+            IS_NEW_ENTRY, IS_EDIT_ENTRY, IS_CONCLUDE -> {
                 result.moodScore = getMoodScore()
                 result.learnedToday = entryHandler_learnedTodayBody.text.toString()
                 result.avoidTomorrow = entryHandler_avoidTomorrowBody.text.toString()
@@ -227,7 +246,7 @@ class EntryHandlerActivity : AppCompatActivity() {
             }
 
             when (mEntryType) {
-                IS_UPDATE, IS_CONCLUDE -> {
+                IS_EDIT_ENTRY, IS_CONCLUDE -> {
                     val idString = (row.getChildAt(GOAL_ROW_CHILD_IDHOLDER) as TextView).text.toString()
                     if (idString.isNotBlank())
                         add.goalID = idString.toLong()
@@ -338,7 +357,7 @@ class EntryHandlerActivity : AppCompatActivity() {
         }
 
         when (mEntryType) {
-            IS_NEW_ENTRY, IS_UPDATE -> {
+            IS_NEW_ENTRY, IS_EDIT_ENTRY -> {
                 when {
                 // Mood score is empty
                     entry.moodScore == -1 -> {
@@ -387,7 +406,7 @@ class EntryHandlerActivity : AppCompatActivity() {
 
             }
 
-            IS_TOMORROW -> {
+            IS_TOMORROW, IS_EDIT_TOMORROW -> {
                 when {
                 // Tomorrow Focus is empty
                     entry.dayFocus.isBlank() -> {
@@ -463,7 +482,7 @@ class EntryHandlerActivity : AppCompatActivity() {
                 }
             }
 
-            IS_UPDATE, IS_CONCLUDE -> {
+            IS_EDIT_ENTRY, IS_EDIT_TOMORROW, IS_CONCLUDE -> {
                 entry.entryID = mCurrentEntryID!!
                 launch(CommonPool) {
                     val db = MyDayDatabase.getInstance(this@EntryHandlerActivity)
@@ -486,7 +505,7 @@ class EntryHandlerActivity : AppCompatActivity() {
                 finish()
             }
 
-            IS_UPDATE, IS_CONCLUDE -> {
+            IS_EDIT_ENTRY, IS_EDIT_TOMORROW, IS_CONCLUDE -> {
                 // Toast confirmation for entry update successful
                 Toast.makeText(this@EntryHandlerActivity, getString(R.string.updateEntry_submitSuccessToast), Toast.LENGTH_LONG).show()
 
