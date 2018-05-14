@@ -34,7 +34,6 @@ class EntryHandlerActivity : AppCompatActivity() {
     private var mFocusedGoalIndex = 0
 
     private lateinit var mThisDay: String
-    private lateinit var mInflater: LayoutInflater
 
     private val mDeletedGoals = mutableListOf<Long>()
 
@@ -52,13 +51,11 @@ class EntryHandlerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entry_handler)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        mInflater = LayoutInflater.from(this@EntryHandlerActivity)
 
-        entryHandler_layoutRoot.visibility = View.INVISIBLE
         // Check which entry type the activity is operating on
         mEntryType = intent.getIntExtra(EXTRA_ENTRY_TYPE_FLAG, 0)
+
         initializeUI()
-        entryHandler_layoutRoot.visibility = View.VISIBLE
     }
 
     // Override for back button
@@ -76,7 +73,13 @@ class EntryHandlerActivity : AppCompatActivity() {
      * Internal functions - Core block
      */
     private fun initializeUI() {
-        // Set date formatter
+        // Make the layout root invisible before setting all content on page
+        entryHandler_layoutRoot.visibility = View.INVISIBLE
+
+        // Set focus listeners
+        setFocusListeners()
+
+        // Setup date formatter
         val dateFormatter = SimpleDateFormat(STRING_DATE_FORMAT, Locale.US)
         val formatDate = DateFormat.getDateInstance(
                 DateFormat.MEDIUM,
@@ -132,7 +135,6 @@ class EntryHandlerActivity : AppCompatActivity() {
                 mThisDay = entryDataExtra.date
                 mCurrentEntryID = entryDataExtra.entryID
                 setUIData(entryDataExtra)
-
             }
 
             IS_CONCLUDE -> {
@@ -152,6 +154,7 @@ class EntryHandlerActivity : AppCompatActivity() {
 
             else -> finish()
         }
+        entryHandler_layoutRoot.visibility = View.VISIBLE
     }
 
     /**
@@ -180,7 +183,7 @@ class EntryHandlerActivity : AppCompatActivity() {
         for ((index, line) in goals.withIndex()) {
             // Disables inflating on index 0 to prevent empty field at the bottom
             if (index != 0)
-                mInflater.inflate(R.layout.inflate_entry_handler_submodule_goals, entryHandler_goalsBody, true)
+                inflateGoalRow()
 
             val goalsRow = entryHandler_goalsBody.getChildAt(index) as ConstraintLayout
 
@@ -190,7 +193,8 @@ class EntryHandlerActivity : AppCompatActivity() {
             if (mEntryType == IS_CONCLUDE) {
                 (goalsRow.getChildAt(GOAL_ROW_CHILD_CHECKBOX) as CheckBox).text = line.goalBody
                 (goalsRow.getChildAt(GOAL_ROW_CHILD_EDITTEXT) as EditText).visibility = View.GONE
-            } else
+            }
+            else
                 (goalsRow.getChildAt(GOAL_ROW_CHILD_EDITTEXT) as EditText).setText(line.goalBody)
 
             (goalsRow.getChildAt(GOAL_ROW_CHILD_IDHOLDER) as TextView).text = line.goalID.toString()
@@ -246,7 +250,7 @@ class EntryHandlerActivity : AppCompatActivity() {
             }
 
             when (mEntryType) {
-                IS_EDIT_ENTRY, IS_CONCLUDE -> {
+                IS_EDIT_ENTRY, IS_EDIT_TOMORROW, IS_CONCLUDE -> {
                     val idString = (row.getChildAt(GOAL_ROW_CHILD_IDHOLDER) as TextView).text.toString()
                     if (idString.isNotBlank())
                         add.goalID = idString.toLong()
@@ -314,10 +318,16 @@ class EntryHandlerActivity : AppCompatActivity() {
         }
     }
 
-    private fun inflateGoalRow(focus: Boolean = false) {
-        val row = mInflater.inflate(R.layout.inflate_entry_handler_submodule_goals, entryHandler_goalsBody, false) as ConstraintLayout
-        if (mEntryType == IS_TOMORROW)
-            row.getChildAt(GOAL_ROW_CHILD_CHECKBOX).visibility = View.GONE
+    private fun inflateGoalRow(focusOnCreated: Boolean = false) {
+        val row = LayoutInflater.from(this@EntryHandlerActivity).inflate(
+                R.layout.inflate_entry_handler_submodule_goals,
+                entryHandler_goalsBody,
+                false
+        ) as ConstraintLayout
+
+        when (mEntryType) {
+            IS_TOMORROW, IS_EDIT_TOMORROW -> row.getChildAt(GOAL_ROW_CHILD_CHECKBOX).visibility = View.GONE
+        }
 
         val rowEditText = (row.getChildAt(GOAL_ROW_CHILD_EDITTEXT) as EditText)
         rowEditText.addTextChangedListener(object : TextWatcher {
@@ -331,13 +341,25 @@ class EntryHandlerActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
         })
-        rowEditText.setOnFocusChangeListener { v, _ ->
+        val thisIndexListener = View.OnFocusChangeListener {v, _ ->
             mFocusedGoalIndex = (v.parent.parent as ViewGroup?)?.indexOfChild(v.parent as View?) ?: 0
         }
-        if (focus)
+
+        rowEditText.onFocusChangeListener = thisIndexListener
+
+        if (focusOnCreated)
             row.getChildAt(GOAL_ROW_CHILD_EDITTEXT).requestFocus()
 
         entryHandler_goalsBody.addView(row)
+    }
+
+    private fun setFocusListeners() {
+        val noIndexListener = View.OnFocusChangeListener { _, _ -> mFocusedGoalIndex = -1 }
+        entryHandler_todayFocusBody.onFocusChangeListener = noIndexListener
+        entryHandler_todayPrioritiesBody.onFocusChangeListener = noIndexListener
+        entryHandler_learnedTodayBody.onFocusChangeListener = noIndexListener
+        entryHandler_avoidTomorrowBody.onFocusChangeListener = noIndexListener
+        entryHandler_thankfulForBody.onFocusChangeListener = noIndexListener
     }
 
     /**
@@ -540,44 +562,48 @@ class EntryHandlerActivity : AppCompatActivity() {
     fun onClickDeleteGoal(view: View) {
         if (!mDeleteButtonDisabled) {
 
-            val goalLine = view.parent as View
-            val goalRoot = goalLine.parent as ViewGroup
-            val idHolder = (goalLine as ConstraintLayout).getChildAt(GOAL_ROW_CHILD_IDHOLDER) as TextView
-            val goalLineIndex = goalRoot.indexOfChild(goalLine)
+            val deletedGoalLine = view.parent as View
+            val idHolder = (deletedGoalLine as ConstraintLayout).getChildAt(GOAL_ROW_CHILD_IDHOLDER) as TextView
+            val deletedGoalLineIndex = entryHandler_goalsBody.indexOfChild(deletedGoalLine)
             val childCount = entryHandler_goalsBody.childCount
+            val safeFocusedGoalIndex = mFocusedGoalIndex
 
-            goalRoot.removeView(goalLine)
+            entryHandler_goalsBody.removeView(deletedGoalLine)
 
             if (childCount > 1) {
 
                 if (idHolder.text.isNotBlank() && idHolder.text != STRING_ZERO)
                     mDeletedGoals.add(idHolder.text.toString().toLong())
 
-                when (mFocusedGoalIndex) {
+                when (safeFocusedGoalIndex) {
 
                     0 -> {
-                        (goalRoot.getChildAt(0) as ConstraintLayout)
+                        (entryHandler_goalsBody.getChildAt(0) as ConstraintLayout)
                                 .getChildAt(GOAL_ROW_CHILD_EDITTEXT)
                                 .requestFocus()
 
                     }
-                    goalLineIndex -> {
-                        (goalRoot.getChildAt(mFocusedGoalIndex - 1) as ConstraintLayout)
+                    deletedGoalLineIndex -> {
+                        (entryHandler_goalsBody.getChildAt(safeFocusedGoalIndex - 1) as ConstraintLayout)
                                 .getChildAt(GOAL_ROW_CHILD_EDITTEXT)
                                 .requestFocus()
+                    }
+
+                    else -> {
+                        if (deletedGoalLineIndex < safeFocusedGoalIndex)
+                            mFocusedGoalIndex = safeFocusedGoalIndex - 1
                     }
                 }
 
-                if (goalLineIndex in 0..mFocusedGoalIndex)
-                    --mFocusedGoalIndex
-                disableDeleteGoalButton()
+
             }
             else {
                 if (idHolder.text.isNotBlank() && idHolder.text != STRING_ZERO)
                     mDeletedGoals.add(idHolder.text.toString().toLong())
                 inflateGoalRow(true)
-                disableDeleteGoalButton()
             }
+
+            disableDeleteGoalButton()
         }
     }
 }

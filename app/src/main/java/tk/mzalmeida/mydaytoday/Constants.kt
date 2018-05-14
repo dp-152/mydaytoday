@@ -10,8 +10,8 @@ const val EXTRA_ENTRY_TYPE_FLAG     = "tk.mzalmeida.mydaytoday.ENTRY_TYPE_FLAG"
 const val IS_NEW_ENTRY      = 10001
 const val IS_EDIT_ENTRY     = 10002
 const val IS_TOMORROW       = 10003
-const val IS_CONCLUDE       = 10004
-const val IS_EDIT_TOMORROW  = 10005
+const val IS_EDIT_TOMORROW  = 10004
+const val IS_CONCLUDE       = 10005
 
 const val REQUEST_EMPTY_DAY_ENTRY_ADDED = 10011
 
